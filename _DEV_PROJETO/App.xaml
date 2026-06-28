@@ -1,0 +1,218 @@
+<Application x:Class="LetreiroDigital.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    ShutdownMode="OnMainWindowClose">
+    <Application.Resources>
+        <!-- Global styles -->
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="#2D2D2D" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuBarBrushKey}" Color="#2D2D2D" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="#E0E0E0" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#1E1E1E" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.WindowTextBrushKey}" Color="#E0E0E0" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#2D2D2D" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="#E0E0E0" />
+
+        <!-- Selection/Hover Colors (Overrides default Blue/Light Gray) -->
+        <!-- CHANGE HERE: Selection/Hover Color (Currently Dark Gray #151515) -->
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#151515" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+            Color="#333333" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+            Color="#CCCCCC" />
+
+        <LinearGradientBrush x:Key="WindowBgGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#12141D" Offset="0" />
+            <GradientStop Color="#1A1D2E" Offset="1" />
+        </LinearGradientBrush>
+
+        <Style TargetType="Window">
+            <Setter Property="FontFamily" Value="Segoe UI Semibold" />
+            <Setter Property="Background" Value="{StaticResource WindowBgGradient}" />
+            <Setter Property="Foreground" Value="#F0F0F0" />
+        </Style>
+
+        <!-- Premium Shadows -->
+        <DropShadowEffect x:Key="PremiumShadow" Color="Black" BlurRadius="20" ShadowDepth="0" Opacity="0.5" />
+        <DropShadowEffect x:Key="SoftShadow" Color="Black" BlurRadius="10" ShadowDepth="2" Opacity="0.3" />
+
+        <!-- Fix for ComboBox Dropdown visibility in Dark Mode -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="#2D2D2D" />
+            <Setter Property="Foreground" Value="#E0E0E0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="6,4" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#444" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#FFD700" />
+                                <Setter Property="Foreground" Value="Black" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#2D2D2D" />
+            <Setter Property="Foreground" Value="#E0E0E0" />
+            <Setter Property="BorderBrush" Value="#444" />
+            <Setter Property="Padding" Value="6,4" />
+        </Style>
+
+        <!-- Fix for TextBox defaults in Dark Mode -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#2D2D2D" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="#444" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="CaretBrush" Value="White" />
+        </Style>
+
+        <!-- Fix for MenuItems in Dark Mode with Gold Highlight -->
+        <Style TargetType="ContextMenu">
+            <Setter Property="Background" Value="#2D2D2D" />
+            <Setter Property="Foreground" Value="#E0E0E0" />
+            <Setter Property="BorderBrush" Value="#444" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="HasDropShadow" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="2">
+                            <StackPanel IsItemsHost="True"
+                                KeyboardNavigation.DirectionalNavigation="Cycle" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="MenuItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#E0E0E0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                            BorderThickness="0" Padding="{TemplateBinding Padding}" CornerRadius="4">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Icon" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut" />
+                                    <ColumnDefinition Width="13" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter x:Name="Icon" ContentSource="Icon"
+                                    Margin="0,0,10,0" VerticalAlignment="Center" />
+                                <ContentPresenter Grid.Column="1" ContentSource="Header"
+                                    RecognizesAccessKey="True" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="2" Text="{TemplateBinding InputGestureText}"
+                                    Margin="10,0,0,0" Foreground="{TemplateBinding Foreground}"
+                                    VerticalAlignment="Center" x:Name="Shortcut" />
+                                <!-- Arrow for submenus -->
+                                <Path x:Name="Arrow" Grid.Column="3" Data="M 0,0 L 4,3.5 L 0,7 Z"
+                                    Fill="{TemplateBinding Foreground}" VerticalAlignment="Center"
+                                    Margin="5,0,0,0" Visibility="Collapsed" />
+                                <Popup x:Name="Popup" Placement="Right"
+                                    IsOpen="{TemplateBinding IsSubmenuOpen}"
+                                    AllowsTransparency="True" Focusable="False"
+                                    PopupAnimation="Fade">
+                                    <Border Background="#2D2D2D" BorderBrush="#444"
+                                        BorderThickness="1" Padding="2">
+                                        <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Highlight Trigger -->
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#FFD700" />
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter TargetName="Arrow" Property="Fill" Value="Black" />
+                                <Setter TargetName="Shortcut" Property="Foreground" Value="Black" />
+                                <Setter TargetName="bd" Property="Effect" Value="{StaticResource SoftShadow}" />
+                            </Trigger>
+                            <Trigger Property="IsSubmenuOpen" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#FFD700" />
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter TargetName="Arrow" Property="Fill" Value="Black" />
+                                <Setter TargetName="bd" Property="Effect" Value="{StaticResource SoftShadow}" />
+                            </Trigger>
+
+                            <!-- Role Triggers -->
+                            <Trigger Property="Role" Value="TopLevelHeader">
+                                <Setter TargetName="Arrow" Property="Visibility" Value="Collapsed" />
+                                <Setter TargetName="Popup" Property="Placement" Value="Bottom" />
+                                <Setter Property="Padding" Value="12,8" />
+                                <Setter Property="Margin" Value="0,0,4,0" />
+                            </Trigger>
+                            <Trigger Property="Role" Value="TopLevelItem">
+                                <Setter TargetName="Arrow" Property="Visibility" Value="Collapsed" />
+                                <Setter Property="Padding" Value="12,8" />
+                                <Setter Property="Margin" Value="0,0,4,0" />
+                            </Trigger>
+                            <Trigger Property="Role" Value="SubmenuHeader">
+                                <Setter TargetName="Arrow" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="bd" Property="CornerRadius" Value="2" />
+                            </Trigger>
+                            <Trigger Property="Role" Value="SubmenuItem">
+                                <Setter TargetName="Arrow" Property="Visibility" Value="Collapsed" />
+                                <Setter TargetName="bd" Property="CornerRadius" Value="2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Fix for ListBoxItems in Dark Mode with Gold Highlight -->
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#E0E0E0" />
+            <Setter Property="Padding" Value="5,2" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Bd" Property="Background" Value="#444" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="Bd" Property="Background" Value="#FFD700" />
+                                <Setter Property="Foreground" Value="Black" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,23 @@
+ORGANIZAÇÃO DO PROJETO LETREIRO DIGITAL
+
+1. _VERSAO_TESTE
+   Este diretório contém a versão executável do aplicativo, pronta para testes.
+   Para rodar, abra a pasta e execute "LetreiroDigital.exe".
+   Esta pasta pode ser zipada e enviada para teste.
+
+2. _DEV_PROJETO
+   Este diretório contém todo o código fonte e arquivos de desenvolvimento.
+3. _ADMIN_SITE
+   Este diretório contém o painel administrativo (HTML/JS) para gerenciar as chaves de acesso.
+   Para usar: Abra o arquivo "index.html" no navegador.
+
+4. BUILD_TEST_VERSION.bat
+   Execute este script para gerar uma nova versão de teste com as alterações mais recentes.
+   A nova versão será salva na pasta `_VERSAO_TESTE_COM_LICENCA`.
+
+COMO TESTAR A LICENÇA:
+1. Abra o `_ADMIN_SITE/index.html` e crie uma nova chave.
+2. Gere a versão de teste rodando o arquivo `BUILD_TEST_VERSION.bat`.
+3. Abra o app gerado. Ele pedirá a chave.
+4. Insira a chave criada no passo 1. O app deve abrir.
+5. Se tentar usar a mesma chave em outro PC, será bloqueado.

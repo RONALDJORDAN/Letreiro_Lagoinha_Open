@@ -1,0 +1,10 @@
+<Window x:Class="LetreiroDigital.Views.PreviewWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:LetreiroDigital.Views"
+    Title="Preview - Letreiro Digital" Height="450" Width="800"
+    Background="#11141B" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <local:TvModeView x:Name="tvView" />
+    </Grid>
+</Window>

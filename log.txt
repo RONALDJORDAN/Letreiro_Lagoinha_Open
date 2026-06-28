@@ -1,0 +1,23 @@
+Creating Directories...
+
+
+    Diret¢rio: C:\Users\adna\Documents\PROJETOS\03-APLICATIVOS-CSHARP\LETREIRO-DIGITAL-WPF
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----        16/02/2026     12:06                _VERSAO_TESTE                                                        
+d-----        16/02/2026     12:06                _DEV_PROJETO                                                         
+Copying Build Files from c:\Users\adna\Documents\PROJETOS\03-APLICATIVOS-CSHARP\LETREIRO-DIGITAL-WPF\bin\Debug\net8.0-windows to c:\Users\adna\Documents\PROJETOS\03-APLICATIVOS-CSHARP\LETREIRO-DIGITAL-WPF\_VERSAO_TESTE...
+Copy Complete.
+Moving Source Files...
+Move-Item : O processo n∆o pode acessar o arquivo porque ele est† sendo usado por outro processo.
+No C:\Users\adna\Documents\PROJETOS\03-APLICATIVOS-CSHARP\LETREIRO-DIGITAL-WPF\organize.ps1:20 caractere:74
++ ... _.Name -notin $exclude } | Move-Item -Destination $dev_projeto -Force
++                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (C:\Users\adna\D...TAL-WPF\log.txt:FileInfo) [Move-Item], IOException
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+ 
+Done Moving.
+
+

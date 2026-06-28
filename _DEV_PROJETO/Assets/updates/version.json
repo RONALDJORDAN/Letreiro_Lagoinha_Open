@@ -1,0 +1,20 @@
+{
+  "version": "7.0.0",
+  "build_number": 1,
+  "release_date": "2026-02-22",
+  "download_url": "https://firebasestorage.googleapis.com/v0/b/letreirodigital-88f8e.appspot.com/o/releases%2FLetreiroDigital_Setup_v2.1.0.exe?alt=media",
+  "file_size_mb": 0,
+  "sha256": "",
+  "required": false,
+  "min_version": "2.0.0",
+  "changelog": [
+    "Central de Atualizações integrada ao app",
+    "Sistema de temas WYSIWYG com live preview",
+    "Exportação e importação de cronogramas em JSON",
+    "Transições suaves (Fade) entre itens",
+    "Janela de preview flutuante",
+    "Atalhos de teclado expandidos"
+  ],
+  "changelog_url": "",
+  "severity": "recommended"
+}

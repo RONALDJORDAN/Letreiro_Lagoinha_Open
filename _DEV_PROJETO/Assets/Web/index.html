@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Letreiro - Controle</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            padding: 10px;
+            margin: 0;
+            padding-bottom: 50px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        h2 {
+            margin: 10px 0;
+            font-size: 1.2rem;
+            color: #aaa;
+        }
+
+        .timer-display {
+            font-size: 4rem;
+            font-weight: bold;
+            font-family: monospace;
+            color: #00E676;
+            margin: 10px 0;
+        }
+
+        .grid-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            touch-action: manipulation;
+        }
+
+        .btn-play {
+            grid-column: span 2;
+            background-color: #FFD700;
+            color: #000;
+            font-size: 1.5rem;
+        }
+
+        .btn-nav {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .btn-toggle {
+            background-color: #2196F3;
+            color: #fff;
+            grid-column: span 2;
+        }
+
+        .btn-stop {
+            background-color: #D32F2F;
+            color: #fff;
+            grid-column: span 2;
+            margin-top: 10px;
+        }
+
+        .schedule-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .schedule-item {
+            background: #1e1e1e;
+            margin-bottom: 5px;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            border-left: 4px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .schedule-item.active {
+            background: #333;
+            border-left-color: #00E676;
+        }
+
+        .schedule-item:hover {
+            background: #252525;
+        }
+
+        .item-time {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .item-content {
+            font-weight: bold;
+        }
+
+        .section-title {
+            text-align: left;
+            margin-top: 30px;
+            margin-left: 5px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+            color: #FFD700;
+        }
+
+        .sliders-container {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: left;
+            border: 1px solid #333;
+        }
+
+        .slider-group {
+            margin-bottom: 15px;
+        }
+
+        .slider-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .slider-group input {
+            width: 100%;
+            cursor: pointer;
+            accent-color: #00E676;
+        }
+
+        .status-bar {
+            position: sticky;
+            top: 0;
+            background: #121212;
+            padding-bottom: 10px;
+            z-index: 10;
+            border-bottom: 1px solid #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class='container'>
+        <div class='status-bar'>
+            <h2 id='currentText'>Aguardando...</h2>
+            <div id='timer' class='timer-display'>--:--</div>
+        </div>
+
+        <div class='grid-controls'>
+            <button class='btn btn-play' onclick="sendCommand('playpause')">⏯️ PLAY / PAUSE</button>
+            <button class='btn btn-nav' onclick="sendCommand('prev')">⏮️ ANTERIOR</button>
+            <button class='btn btn-nav' onclick="sendCommand('next')">PRÓXIMO ⏭️</button>
+            <button class='btn btn-toggle' onclick="sendCommand('toggle_banner')">📺 LIGAR/DESLIGAR BANNER</button>
+            <button class='btn btn-stop' onclick="sendCommand('stop')">⏹️ PARAR TUDO</button>
+        </div>
+
+        <h3 class='section-title'>CONTROLES MODO TV</h3>
+        <div class='sliders-container'>
+            <div class='slider-group'>
+                <label>Evento Atual (Tamanho)</label>
+                <input type='range' id='rngEvent' min='20' max='150' onchange="setSize('TvEventSize', this.value)">
+            </div>
+            <div class='slider-group'>
+                <label>Lista Cronograma (Tamanho)</label>
+                <input type='range' id='rngList' min='12' max='60' onchange="setSize('TvListSize', this.value)">
+            </div>
+            <div class='slider-group'>
+                <label>Timer LED (Tamanho)</label>
+                <input type='range' id='rngTimer' min='40' max='200' onchange="setSize('TvTimerSize', this.value)">
+            </div>
+            <div class='slider-group'>
+                <label>Relógio LED (Tamanho)</label>
+                <input type='range' id='rngClock' min='30' max='150' onchange="setSize('TvClockSize', this.value)">
+            </div>
+            <div class='slider-group'>
+                <label>Barra Horário (Tamanho)</label>
+                <input type='range' id='rngFooter' min='10' max='80' onchange="setSize('TvFooterSize', this.value)">
+            </div>
+        </div>
+
+        <h3 class='section-title'>CRONOGRAMA</h3>
+        <ul id='schedule' class='schedule-list'>
+            <!-- Items loaded via JS -->
+        </ul>
+    </div>
+
+    <script>
+        // Check for key in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlKey = urlParams.get('key');
+        if (urlKey) {
+            localStorage.setItem('access_key', urlKey);
+            // Optional: Clean URL
+            // window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        function getAuthHeaders() {
+            const headers = { 'Content-Type': 'application/json' };
+            const key = localStorage.getItem('access_key');
+            if (key) headers['x-access-token'] = key;
+            return headers;
+        }
+
+        async function handleResponse(res) {
+            if (res.status === 401) {
+                const key = prompt("Senha de Acesso Necessária:");
+                if (key) {
+                    localStorage.setItem('access_key', key);
+                    return true; // Retry allowed
+                }
+            }
+            return false;
+        }
+
+        async function sendCommand(action, value) {
+            const payload = { action: action };
+            if (value !== undefined) payload.value = value;
+
+            try {
+                const res = await fetch('/api/command', {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(payload)
+                });
+                if (await handleResponse(res)) sendCommand(action, value); // Retry
+            } catch (e) { console.error(e); }
+        }
+
+        async function setSize(target, value) {
+            try {
+                const res = await fetch('/api/command', {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ action: 'set_tv_size', target: target, value: value })
+                });
+                if (await handleResponse(res)) setSize(target, value);
+            } catch (e) { console.error(e); }
+        }
+
+        let firstLoad = true;
+
+        async function updateStatus() {
+            try {
+                const res = await fetch('/api/status', { headers: getAuthHeaders() });
+                if (await handleResponse(res)) { updateStatus(); return; }
+
+                if (!res.ok) return;
+
+                const data = await res.json();
+
+                document.getElementById('currentText').innerText = data.currentText || 'Sem texto';
+
+                const timerEl = document.getElementById('timer');
+                timerEl.innerText = data.timer;
+                timerEl.style.color = data.timerRunning ? '#00E676' : '#555';
+
+                // Update Sliders only on first load/connect to avoid jumping while dragging
+                // Ideally we would sync only if not dragging, but keep it simple
+                if (firstLoad) {
+                    if (data.tvEventSize) document.getElementById('rngEvent').value = data.tvEventSize;
+                    if (data.tvListSize) document.getElementById('rngList').value = data.tvListSize;
+                    if (data.tvTimerSize) document.getElementById('rngTimer').value = data.tvTimerSize;
+                    if (data.tvClockSize) document.getElementById('rngClock').value = data.tvClockSize;
+                    if (data.tvFooterSize) document.getElementById('rngFooter').value = data.tvFooterSize;
+                    firstLoad = false;
+                }
+
+                // Render Schedule
+                const list = document.getElementById('schedule');
+                list.innerHTML = '';
+                if (data.schedule && data.schedule.length > 0) {
+                    data.schedule.forEach(item => {
+                        const li = document.createElement('li');
+                        li.className = 'schedule-item' + (item.active ? ' active' : '');
+                        li.onclick = () => sendCommand('select_item', item.index);
+
+                        li.innerHTML = `
+                            <div>
+                                <div class='item-time'>${item.time}</div>
+                                <div class='item-content'>${item.content}</div>
+                            </div>
+                            ${item.active ? '<span>🔴</span>' : ''}
+                        `;
+                        list.appendChild(li);
+                    });
+                } else {
+                    list.innerHTML = '<li style="color:#666; padding:10px;">Nenhum item no cronograma.</li>';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        setInterval(updateStatus, 1000);
+        updateStatus();
+    </script>
+</body>
+
+</html>

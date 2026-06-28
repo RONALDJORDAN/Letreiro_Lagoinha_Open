@@ -1,0 +1,250 @@
+<Window x:Class="LetreiroDigital.Views.UpdateCenterWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Central de Atualizações — Letreiro Digital"
+    Height="620" Width="520"
+    WindowStartupLocation="CenterOwner"
+    ResizeMode="NoResize"
+    Background="#0A0A0B">
+
+    <Window.Resources>
+        <!-- Design Tokens -->
+        <SolidColorBrush x:Key="AccentGreen" Color="#10B981" />
+        <SolidColorBrush x:Key="AccentBlue" Color="#3B82F6" />
+        <SolidColorBrush x:Key="AccentGold" Color="#F59E0B" />
+        <SolidColorBrush x:Key="AccentRed" Color="#EF4444" />
+        <SolidColorBrush x:Key="Surface1" Color="#18181B" />
+        <SolidColorBrush x:Key="Surface2" Color="#27272A" />
+        <SolidColorBrush x:Key="Border" Color="#3F3F46" />
+        <SolidColorBrush x:Key="TextPrimary" Color="#F4F4F5" />
+        <SolidColorBrush x:Key="TextMuted" Color="#71717A" />
+
+        <!-- Button Style -->
+        <Style x:Key="ActionBtn" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentGreen}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="25,12" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                            CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.85" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GhostBtn" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource TextMuted}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="20,10" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#27272A" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />  <!-- Header -->
+            <RowDefinition Height="*" />     <!-- Content -->
+            <RowDefinition Height="Auto" />  <!-- Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- ═══════════ HEADER ═══════════ -->
+        <Border Grid.Row="0" Background="#111113" Padding="25,20"
+            BorderBrush="{StaticResource Border}" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Ícone -->
+                <Border Grid.Column="0" Width="50" Height="50" CornerRadius="12"
+                    Background="#1E3A2F" Margin="0,0,15,0">
+                    <TextBlock Text="🔄" FontSize="24"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+
+                <!-- Título -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="CENTRAL DE ATUALIZAÇÕES"
+                        FontWeight="Black" FontSize="16"
+                        Foreground="{StaticResource TextPrimary}" />
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <TextBlock Text="Versão atual: " FontSize="11"
+                            Foreground="{StaticResource TextMuted}" />
+                        <TextBlock x:Name="lblCurrentVersion" Text="v2.1.0"
+                            FontSize="11" FontWeight="Bold"
+                            Foreground="{StaticResource AccentGreen}" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ═══════════ CONTENT AREA ═══════════ -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="25,20">
+
+                <!-- STATUS CARD -->
+                <Border x:Name="cardStatus" Background="{StaticResource Surface1}"
+                    CornerRadius="10" Padding="20" Margin="0,0,0,15"
+                    BorderBrush="{StaticResource Border}" BorderThickness="1">
+                    <StackPanel>
+                        <!-- Status Icon + Message -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock x:Name="lblStatusIcon" Text="🔍" FontSize="20"
+                                VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <TextBlock x:Name="lblStatusMessage"
+                                Text="Clique em verificar para buscar atualizações."
+                                FontSize="13" Foreground="{StaticResource TextPrimary}"
+                                VerticalAlignment="Center" TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <!-- Progress Bar (hidden by default) -->
+                        <Border x:Name="pnlProgress" Visibility="Collapsed" Margin="0,5,0,0">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,5">
+                                    <TextBlock x:Name="lblProgressText" Text="0%"
+                                        FontSize="11" Foreground="{StaticResource AccentGreen}"
+                                        FontWeight="Bold" />
+                                    <TextBlock x:Name="lblProgressSize" Text=""
+                                        FontSize="10" Foreground="{StaticResource TextMuted}"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+                                <Border Height="6" CornerRadius="3" Background="#27272A">
+                                    <Border x:Name="progressBar" Height="6" CornerRadius="3"
+                                        Background="{StaticResource AccentGreen}"
+                                        HorizontalAlignment="Left" Width="0" />
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- UPDATE INFO CARD (hidden by default) -->
+                <Border x:Name="cardUpdateInfo" Visibility="Collapsed"
+                    Background="{StaticResource Surface1}"
+                    CornerRadius="10" Padding="20" Margin="0,0,0,15"
+                    BorderBrush="#1E3A2F" BorderThickness="1">
+                    <StackPanel>
+                        <!-- Version Badge -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <Border Background="#065F46" CornerRadius="4" Padding="8,3"
+                                Margin="0,0,8,0">
+                                <TextBlock x:Name="lblNewVersion" Text="v2.2.0"
+                                    FontSize="11" FontWeight="Black"
+                                    Foreground="#34D399" />
+                            </Border>
+                            <Border x:Name="badgeSeverity" Background="#374151"
+                                CornerRadius="4" Padding="8,3">
+                                <TextBlock x:Name="lblSeverity" Text="RECOMENDADA"
+                                    FontSize="9" FontWeight="Black"
+                                    Foreground="#9CA3AF" />
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Release Info -->
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Data de Lançamento" FontSize="10"
+                                    Foreground="{StaticResource TextMuted}" />
+                                <TextBlock x:Name="lblReleaseDate" Text="22/02/2026"
+                                    FontSize="12" FontWeight="SemiBold"
+                                    Foreground="{StaticResource TextPrimary}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Tamanho" FontSize="10"
+                                    Foreground="{StaticResource TextMuted}" />
+                                <TextBlock x:Name="lblFileSize" Text="45.2 MB"
+                                    FontSize="12" FontWeight="SemiBold"
+                                    Foreground="{StaticResource TextPrimary}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Changelog -->
+                        <TextBlock Text="NOVIDADES" FontSize="10" FontWeight="ExtraBold"
+                            Foreground="{StaticResource AccentGreen}"
+                            Margin="0,0,0,8" />
+                        <StackPanel x:Name="changelogList" />
+                    </StackPanel>
+                </Border>
+
+                <!-- ACTION BUTTONS -->
+                <StackPanel x:Name="pnlActions" Margin="0,5,0,0">
+                    <Button x:Name="btnCheckUpdate" Content="🔍  VERIFICAR ATUALIZAÇÕES"
+                        Style="{StaticResource ActionBtn}" Click="BtnCheckUpdate_Click"
+                        Margin="0,0,0,10" />
+
+                    <Button x:Name="btnDownload" Content="⬇️  BAIXAR ATUALIZAÇÃO"
+                        Style="{StaticResource ActionBtn}" Click="BtnDownload_Click"
+                        Visibility="Collapsed" Margin="0,0,0,10"
+                        Background="{StaticResource AccentBlue}" />
+
+                    <Button x:Name="btnInstall" Content="🚀  INSTALAR E REINICIAR"
+                        Style="{StaticResource ActionBtn}" Click="BtnInstall_Click"
+                        Visibility="Collapsed" Margin="0,0,0,10"
+                        Background="{StaticResource AccentGold}" Foreground="#000" />
+
+                    <Button x:Name="btnCancel" Content="Cancelar Download"
+                        Style="{StaticResource GhostBtn}" Click="BtnCancel_Click"
+                        Visibility="Collapsed" Margin="0,0,0,10" />
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ═══════════ FOOTER ═══════════ -->
+        <Border Grid.Row="2" Padding="25,12"
+            Background="#111113"
+            BorderBrush="{StaticResource Border}" BorderThickness="0,1,0,0">
+            <Grid>
+                <TextBlock Text="Letreiro Digital — CodAureo DevStudio"
+                    FontSize="10" Foreground="{StaticResource TextMuted}"
+                    VerticalAlignment="Center" />
+                <Button x:Name="btnClose" Content="Fechar" HorizontalAlignment="Right"
+                    Style="{StaticResource GhostBtn}" Click="BtnClose_Click"
+                    Padding="15,6" FontSize="11" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,20 @@
+{
+  "rules": {
+    "licencas": {
+      // Admin (Logado no seu Site Admin) tem acesso total para ler e apagar tudo
+      ".read": "auth != null",
+      ".write": "auth != null",
+
+      "$chave": {
+        // O Aplicativo Letreiro pode ler a chave específica para saber se ela existe
+        ".read": "data.exists()",
+
+        // Regra de Escrita (Ativação):
+        // 1. Permite se você for Admin logado
+        // 2. OU se a licença ainda estiver livre (sem hwid_vinculado)
+        // 3. OU se o PC que está tentando gravar for o mesmo que já está ativado (Re-validação)
+        ".write": "auth != null || !data.child('hwid_vinculado').exists() || data.child('hwid_vinculado').val() == '' || data.child('hwid_vinculado').val() == newData.child('hwid_vinculado').val()"
+      }
+    }
+  }
+}

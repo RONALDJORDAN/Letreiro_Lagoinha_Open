@@ -1,0 +1,24 @@
+<Window x:Class="LetreiroDigital.Views.ClockWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Relógio"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Background="Transparent">
+
+    <Border x:Name="rootBorder" Background="Red" CornerRadius="8">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock x:Name="timerDisplay" Text=""
+                       FontSize="28" FontWeight="Bold"
+                       Foreground="White" FontFamily="Consolas"
+                       HorizontalAlignment="Center"
+                       Visibility="Collapsed"/>
+            <TextBlock x:Name="clockDisplay" Text="00:00:00"
+                       FontSize="30" FontWeight="Bold"
+                       Foreground="White" FontFamily="Consolas"
+                       HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Border>
+</Window>

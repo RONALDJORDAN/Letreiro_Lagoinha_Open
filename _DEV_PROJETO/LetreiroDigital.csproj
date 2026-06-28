@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>LetreiroDigital</AssemblyName>
+    <RootNamespace>LetreiroDigital</RootNamespace>
+    <Version>4.6.0</Version>
+    <FileVersion>4.6.0</FileVersion>
+    <AssemblyVersion>4.6.0</AssemblyVersion>
+    <ApplicationIcon>Assets\app_icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\lagoinha.jpg" />
+    <Resource Include="Assets\app_icon.ico" />
+    <Content Include="Assets\Web\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <!-- Fontes embutidas no executavel (nao precisa instalar no Windows) -->
+    <Resource Include="Fonts\*.ttf" />
+    <Resource Include="Assets\Fonts\*.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="FirebaseDatabase.net" Version="4.2.0" />
+  </ItemGroup>
+
+</Project>

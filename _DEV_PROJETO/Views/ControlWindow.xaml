@@ -1,0 +1,708 @@
+<Window x:Class="LetreiroDigital.Views.ControlWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:LetreiroDigital.Converters"
+    xmlns:local="clr-namespace:LetreiroDigital.Views"
+    Title="Painel de Controle - Lagoinha Digital"
+    Icon="/Assets/app_icon.ico"
+    Width="1280" Height="900"
+    MinWidth="900" MinHeight="600"
+    Background="{DynamicResource PanelBgBrush}"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Maximized"
+    Opacity="0"
+    PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard Storyboard="{StaticResource WindowFadeIn}" />
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Window.Resources>
+        <Storyboard x:Key="WindowFadeIn">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.8" />
+            <DoubleAnimation Storyboard.TargetProperty="Top" From="50" Duration="0:0:0.8">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="7" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Style x:Key="GlassBorder" TargetType="Border">
+            <Setter Property="Background" Value="#22FFFFFF" />
+            <Setter Property="BorderBrush" Value="#44FFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Effect" Value="{StaticResource SoftShadow}" />
+        </Style>
+        <!-- User Theme Resources (Dynamic) -->
+        <SolidColorBrush x:Key="PanelBgBrush" Color="#121212" />
+        <SolidColorBrush x:Key="SidebarBgBrush" Color="#1A1A1A" />
+        <SolidColorBrush x:Key="ControlHeaderBgBrush" Color="#2D2D2D" />
+        <SolidColorBrush x:Key="UserAccentBrush" Color="#FFD700" />
+        <SolidColorBrush x:Key="UserTextBrush" Color="#E0E0E0" />
+        <SolidColorBrush x:Key="UserTextDimBrush" Color="#888888" />
+
+        <conv:BoolToVisibilityConverter x:Key="BoolToVis" />
+        <conv:InverseBoolToVisibilityConverter x:Key="InvBoolToVis" />
+        <conv:HexToBrushConverter x:Key="HexToBrush" />
+        <conv:EqualityToBrushConverter x:Key="EqualityToBrush" />
+
+        <!-- Styles -->
+        <Style x:Key="AccentBtn" TargetType="Button">
+            <Setter Property="Background" Value="#FFD700" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6"
+                            Padding="{TemplateBinding Padding}" Effect="{StaticResource SoftShadow}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#FFE44D" />
+                                <Setter TargetName="bd" Property="Effect" Value="{StaticResource PremiumShadow}" />
+                            </Trigger>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.05" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.05" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.0" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DarkBtn" TargetType="Button">
+            <Setter Property="Background" Value="#252525" />
+            <Setter Property="Foreground" Value="#B0B0B0" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6"
+                            Padding="{TemplateBinding Padding}" Effect="{StaticResource SoftShadow}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#333" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.05" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.05" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.0" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModeBtn" TargetType="Button">
+            <Setter Property="Background" Value="#2A2A2A" />
+            <Setter Property="Foreground" Value="#808080" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                            CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#444" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DayBtn" TargetType="Button">
+            <Setter Property="Background" Value="#333" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="9" />
+            <Setter Property="Padding" Value="6,4" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="3"
+                            Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#444" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DangerBtn" TargetType="Button">
+            <Setter Property="Background" Value="#D32F2F" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Padding" Value="15" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F44336" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderStyle" TargetType="Slider">
+            <Setter Property="Minimum" Value="0" />
+            <Setter Property="Height" Value="20" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#B0B0B0" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="MinWidth" Value="90" />
+        </Style>
+
+        <Style x:Key="TimerProgressSlider" TargetType="Slider">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid Margin="0,5">
+                            <Border Height="2" Background="#333" CornerRadius="1" VerticalAlignment="Center" Margin="10,0"/>
+                            <Track x:Name="PART_Track">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Grid Width="20" Height="20">
+                                                    <TextBlock Text="🎵" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                                                        <TextBlock.RenderTransform>
+                                                            <RotateTransform Angle="-10" />
+                                                        </TextBlock.RenderTransform>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>    <Grid>
+        <DockPanel>
+        <Menu x:Name="MainMenu" DockPanel.Dock="Top" Background="{DynamicResource ControlHeaderBgBrush}" Foreground="{DynamicResource UserTextBrush}" FontSize="11"
+            Padding="5,8">
+            <MenuItem Header="📋 Arquivo" Foreground="{DynamicResource UserTextBrush}">
+                <MenuItem Header="💾 Salvar Tudo (Ctrl+S)" Click="MenuSave_Click" />
+                <MenuItem Header="🔄 Recarregar" Click="MenuReload_Click" />
+                <Separator />
+                <MenuItem Header="Exportar Cronograma" Click="MenuExportSchedule_Click" />
+                <MenuItem Header="Importar Cronograma" Click="MenuImportSchedule_Click" />
+                <Separator />
+                <MenuItem Header="❌ Sair" Click="BtnQuit_Click" />
+            </MenuItem>
+            
+            <MenuItem Header="🎨 Temas" Foreground="{DynamicResource UserTextBrush}">
+                <MenuItem Header="📺 Temas do Público (TV)" x:Name="menuThemes">
+                    <!-- Gerado dinamicamente via código -->
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="👤 Temas do Usuário (Painel)">
+                    <MenuItem Header="Padrão Dark" Click="MenuUserTheme_Click" Tag="Standard"/>
+                    <MenuItem Header="Modern Blue" Click="MenuUserTheme_Click" Tag="ModernBlue"/>
+                    <MenuItem Header="Glassmorphism" Click="MenuUserTheme_Click" Tag="Glass"/>
+                    <MenuItem Header="Luminous Emerald" Click="MenuUserTheme_Click" Tag="Emerald"/>
+                    <MenuItem Header="Cyberpunk Streamer" Click="MenuUserTheme_Click" Tag="Cyberpunk"/>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="🛠️ Editor de Temas Público" Click="MenuThemeEditor_Click" FontWeight="Bold" />
+            </MenuItem>
+
+            <MenuItem Header="➕ Adicionar" Foreground="{DynamicResource UserTextBrush}">
+lick="MenuGeneralSettings_Click" />
+                <Separator Background="#555" />
+                <MenuItem Header="Sair" Click="BtnQuit_Click" />
+            </MenuItem>
+
+                <MenuItem Header="Editor de Temas WYSIWYG" Click="MenuThemeEditor_Click"
+                    FontWeight="Bold">
+                    <MenuItem.Icon>
+                        <TextBlock Text="✨" FontSize="14" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Background="#555" />
+                <MenuItem Header="Aplicar Tema..." Click="MenuApplyTheme_Click" />
+                <MenuItem Header="Salvar Tema Atual..." Click="MenuSaveCurrentTheme_Click" />
+                <MenuItem Header="Gerenciar Temas..." Click="MenuManageThemes_Click" />
+            </MenuItem>
+
+            <MenuItem Header="⚙️ Apresentação" Foreground="{DynamicResource UserTextBrush}">
+                <MenuItem Header="Modo Tela Cheia" Click="MenuFullscreen_Click" InputGestureText="F11" />
+                <MenuItem Header="Preview em Nova Janela" Click="MenuPreviewWindow_Click" />
+            </MenuItem>
+
+            <MenuItem Header="⌨️ Atalhos" Foreground="{DynamicResource UserTextBrush}">
+                <MenuItem Header="Configurar Atalhos de Teclado" Click="MenuKeyboardShortcuts_Click" FontWeight="Bold" />
+                <Separator Background="#555" />
+                <MenuItem Header="Restaurar Atalhos Padrão" Click="MenuResetShortcuts_Click" />
+                <MenuItem Header="Ver Lista de Atalhos" Click="MenuShowShortcuts_Click" InputGestureText="F1" />
+            </MenuItem>
+
+            <MenuItem Header="📱 Controle Remoto" Foreground="{DynamicResource UserTextBrush}">
+                <MenuItem Header="Iniciar Servidor Web" Click="MenuStartWebServer_Click" />
+                <MenuItem Header="Ver QR Code (App)" Click="MenuShowQRCode_Click" />
+                <MenuItem Header="Configurar Acesso" Click="MenuConfigureRemote_Click" />
+                <Separator Background="#555" />
+                <MenuItem Header="Parar Servidor" Click="MenuStopWebServer_Click" />
+            </MenuItem>
+
+            <MenuItem Header="❓ Ajuda" Foreground="{DynamicResource UserTextBrush}">
+                <MenuItem Header="🔄 Central de Atualizações" Click="MenuUpdateCenter_Click"
+                    FontWeight="Bold">
+                    <MenuItem.Icon>
+                        <TextBlock Text="🚀" FontSize="14" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Background="#555" />
+                <MenuItem Header="Tutorial Rápido" Click="MenuQuickTutorial_Click" />
+                <MenuItem Header="Sobre" Click="MenuAbout_Click" />
+            </MenuItem>
+        </Menu>
+
+        <Grid x:Name="mainControlGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="colList" Width="340" />
+                <ColumnDefinition x:Name="colPreview" Width="*" />
+                <ColumnDefinition x:Name="colControls" Width="300" />
+            </Grid.ColumnDefinitions>
+
+            <!-- ==================== LEFT PANEL ==================== -->
+            <Border x:Name="paneList" Grid.Column="0" Background="{DynamicResource SidebarBgBrush}" BorderBrush="#252525" BorderThickness="0,0,1,0">
+                <DockPanel>
+                    <!-- Logo + Status Section -->
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="15,20,15,10">
+                        <Border Width="100" Height="100" CornerRadius="50" Background="#333"
+                            ClipToBounds="True">
+                            <Image Source="/Assets/lagoinha.jpg" Stretch="UniformToFill" />
+                        </Border>
+                        <Border Background="#252525" BorderBrush="#333" BorderThickness="1"
+                            CornerRadius="6" Padding="10" Margin="10,0,0,0"
+                            VerticalAlignment="Center">
+                            <StackPanel>
+
+                                <!-- Connection Status -->
+                                <TextBlock Text="CONEXÃO" FontSize="8" FontWeight="Bold"
+                                    Foreground="#888" Margin="0,0,0,3" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse x:Name="dotConnection" Width="8" Height="8"
+                                        Fill="#555" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                    <TextBlock x:Name="lblConnectionStatus" Text="Verificando..."
+                                        FontSize="9" FontWeight="Bold" Foreground="#888"
+                                        VerticalAlignment="Center" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Schedule Header -->
+                    <DockPanel DockPanel.Dock="Top" Margin="20,12">
+                        <TextBlock Text="CRONOGRAMA" FontSize="15" FontWeight="Bold"
+                            Foreground="#FFD700" VerticalAlignment="Center" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                            DockPanel.Dock="Right">
+                            <Button Content="+ ABA" Style="{StaticResource DarkBtn}" FontSize="10"
+                                Margin="0,0,6,0" Click="BtnAddTab_Click"
+                                ToolTip="Adicionar nova aba" />
+                            <Button Content="+ ITEM" Style="{StaticResource AccentBtn}"
+                                FontSize="11"
+                                Margin="0,0,6,0" Click="BtnAdd_Click"
+                                ToolTip="Adicionar item ao cronograma atual" />
+                            <Button Content="↻" Style="{StaticResource DarkBtn}" FontSize="13"
+                                Click="BtnResetSchedule_Click" ToolTip="Restaurar padrão" />
+                        </StackPanel>
+                    </DockPanel>
+
+
+                    <!-- Tab Selector -->
+                    <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Disabled" Margin="5,0,5,12">
+                        <ItemsControl x:Name="daySwitcher" ItemsSource="{Binding ScheduleTabs}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding}" Click="DayBtn_Click" Tag="{Binding}"
+                                        Margin="2,0" Style="{StaticResource DayBtn}" Padding="10,6"
+                                        FontSize="11">
+                                        <Button.Background>
+                                            <MultiBinding
+                                                Converter="{StaticResource EqualityToBrush}">
+                                                <Binding
+                                                    RelativeSource="{RelativeSource AncestorType=Window}"
+                                                    Path="DataContext.CurrentDay" />
+                                                <Binding Path="." />
+                                            </MultiBinding>
+                                        </Button.Background>
+                                        <Button.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="🗑️ Excluir Aba"
+                                                    Click="MenuDeleteTab_Click" Tag="{Binding}" />
+                                                <MenuItem Header="✏️ Renomear Aba"
+                                                    Click="MenuRenameTab_Click" Tag="{Binding}" />
+                                            </ContextMenu>
+                                        </Button.ContextMenu>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- Schedule List -->
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10,0,10,10">
+                        <StackPanel x:Name="scheduleList" />
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+
+            <!-- ==================== MIDDLE PANEL ==================== -->
+            <DockPanel Grid.Column="1" Background="#0A0A0A" Margin="0">
+
+                <!-- Preview -->
+                <TextBlock DockPanel.Dock="Top" Text="PRÉ-VISUALIZAÇÃO EM TEMPO REAL"
+                    HorizontalAlignment="Center" FontSize="10" FontWeight="Bold"
+                    Foreground="#B0B0B0" Margin="0,0,0,5" />
+
+                <TextBlock DockPanel.Dock="Bottom"
+                    Text="Arraste os elementos (Relógio, Letreiro) dentro da área preta para posicioná-los nas telas."
+                    HorizontalAlignment="Center" FontSize="9" Foreground="#666" Margin="0,8" />
+
+                <Border Margin="20,0" BorderBrush="#333" BorderThickness="2" CornerRadius="6"
+                    ClipToBounds="True" Background="Black">
+                    <Viewbox Stretch="Uniform">
+                        <Grid Width="{Binding MonitorWidth}" Height="{Binding MonitorHeight}">
+                            <local:TvModeView x:Name="tvPreview" />
+                        </Grid>
+                    </Viewbox>
+                </Border>
+            </DockPanel>
+
+            <!-- PAINEL DE CONTROLES (RIGHT) -->
+            <Border x:Name="paneControls" Grid.Column="2" 
+                    Background="{DynamicResource SidebarBgBrush}" 
+                    BorderBrush="#252525" BorderThickness="1,0,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="cntControls">
+                        <!-- Current Item -->
+                        <StackPanel Margin="20,20,20,10">
+                            <TextBlock Text="ITEM ATUAL" FontSize="10" FontWeight="Bold"
+                                Foreground="{DynamicResource UserAccentBrush}" />
+                            <TextBlock x:Name="lblActiveIdx" Text="--" FontSize="28"
+                                FontWeight="Bold" Foreground="{DynamicResource UserTextBrush}" Margin="0,4,0,0" />
+                            <TextBlock x:Name="lblActiveName" Text="Nenhum item selecionado"
+                                FontSize="11" Foreground="{DynamicResource UserTextDimBrush}" TextWrapping="Wrap"
+                                Margin="0,5,0,0" />
+                        </StackPanel>
+
+                        <!-- Clock & Timer Display & Controls -->
+                        <Border Background="#111" Margin="10,0" Padding="10" CornerRadius="6">
+                            <StackPanel Orientation="Vertical">
+                                <!-- Digital Clock Small -->
+                                <TextBlock x:Name="lblClockPanel" Text="00:00" FontSize="14"
+                                    FontWeight="SemiBold" Foreground="#888"
+                                    HorizontalAlignment="Center"
+                                    FontFamily="Segoe UI" Margin="0,0,0,2" />
+
+                                <TextBlock x:Name="lblTimerBig" Text="--:--" FontSize="40"
+                                    FontWeight="Bold" Foreground="#00E676"
+                                    HorizontalAlignment="Center"
+                                    FontFamily="Segoe UI" Margin="0,0,0,0" />
+
+                                <Slider x:Name="sliderProgress" Minimum="0" Maximum="100" 
+                                        Value="{Binding TimerProgress, Mode=TwoWay}"
+                                        Style="{StaticResource TimerProgressSlider}"
+                                        PreviewMouseDown="SliderProgress_PreviewMouseDown"
+                                        PreviewMouseUp="SliderProgress_PreviewMouseUp"
+                                        Margin="10,0,10,10" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button x:Name="btnPrevItem" Content="⏮️"
+                                        Style="{StaticResource DarkBtn}"
+                                        Width="40" Height="30" Margin="0,0,5,0"
+                                        Click="BtnPrevItem_Click"
+                                        ToolTip="Item Anterior (Seta Cima)" />
+
+                                    <Button x:Name="btnPlayPause" Content="⏯️"
+                                        Style="{StaticResource AccentBtn}"
+                                        Width="50" Height="30" Margin="0,0,5,0"
+                                        Click="BtnPlayPause_Click"
+                                        ToolTip="Pausar/Retomar Timer (Espaço)" />
+
+                                    <Button x:Name="btnNextItem" Content="⏭️"
+                                        Style="{StaticResource DarkBtn}"
+                                        Width="40" Height="30"
+                                        Click="BtnNextItem_Click"
+                                        ToolTip="Próximo Item (Seta Baixo)" />
+                                </StackPanel>
+
+                                <!-- Time Adjustment Row -->
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <Button Content="-1 min" Style="{StaticResource DarkBtn}" 
+                                            Width="60" Height="25" Margin="0,0,5,0"
+                                            Click="BtnSubMin_Click" FontSize="10"
+                                            ToolTip="Subtrair 1 minuto"/>
+                                    <Button Content="RESET" Style="{StaticResource DarkBtn}" 
+                                            Width="50" Height="25" Margin="0,0,5,0"
+                                            Click="BtnResetTimer_Click" FontSize="9"
+                                            ToolTip="Reiniciar tempo do item atual"/>
+                                    <Button Content="+1 min" Style="{StaticResource DarkBtn}" 
+                                            Width="60" Height="25"
+                                            Click="BtnAddMin_Click" FontSize="10"
+                                            ToolTip="Adicionar 1 minuto"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+
+                        <!-- Settings -->
+                        <StackPanel Margin="20,10">
+                            <TextBlock x:Name="lblSettingsTitle" Text="CONFIGURAÇÕES"
+                                FontSize="10" FontWeight="Bold" Foreground="White" Margin="0,0,0,4" />
+                            <Border x:Name="settingsIndicator" Height="3" Background="#002366"
+                                CornerRadius="2" Margin="0,0,0,12" />
+
+                            <!-- Layout TV -->
+                            <GroupBox Header="Layout TV" Foreground="#FFD700" FontSize="9"
+                                FontWeight="Bold" BorderBrush="#333" Padding="8" Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton x:Name="rbLayout1" Content="Completo" IsChecked="True" 
+                                                 Foreground="White" FontSize="10" Margin="0,0,15,0"
+                                                 Checked="LayoutRadio_Checked"/>
+                                    <RadioButton x:Name="rbLayout2" Content="Letreiro Inferior" 
+                                                 Foreground="White" FontSize="10"
+                                                 Checked="LayoutRadio_Checked"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Monitor Select -->
+                            <GroupBox Header="Monitor" Foreground="#FFD700" FontSize="9"
+                                FontWeight="Bold" BorderBrush="#333" Padding="8" Margin="0,0,0,8">
+                                <ComboBox x:Name="cboMonitor" FontSize="10" Background="#252525"
+                                    Foreground="Black" SelectionChanged="MonitorSelect_Changed">
+                                    <ComboBox.Resources>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Setter Property="Background" Value="#252525" />
+                                            <Setter Property="Foreground" Value="White" />
+                                            <Setter Property="BorderThickness" Value="0" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ComboBoxItem">
+                                                        <Border x:Name="bd"
+                                                            Background="{TemplateBinding Background}"
+                                                            Padding="6,4">
+                                                            <ContentPresenter />
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver"
+                                                                Value="True">
+                                                                <Setter TargetName="bd"
+                                                                    Property="Background"
+                                                                    Value="#444" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsSelected"
+                                                                Value="True">
+                                                                <Setter TargetName="bd"
+                                                                    Property="Background"
+                                                                    Value="#FFD700" />
+                                                                <Setter Property="Foreground"
+                                                                    Value="Black" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ComboBox.Resources>
+                                </ComboBox>
+                            </GroupBox>
+
+                            <!-- Warning Feature -->
+                            <GroupBox Header="⚠️ Aviso de Finalização" Foreground="#FFD700"
+                                FontSize="9" FontWeight="Bold" BorderBrush="#333"
+                                Padding="8" Margin="0,0,0,8">
+                                <StackPanel>
+                                    <CheckBox x:Name="chkEnableWarning"
+                                        Content="Ativar aviso antes de finalizar"
+                                        Foreground="#E0E0E0" FontSize="10"
+                                        Margin="0,0,0,8"
+                                        Checked="ChkEnableWarning_Changed"
+                                        Unchecked="ChkEnableWarning_Changed" />
+                                    <DockPanel Margin="0,2">
+                                        <TextBlock Text="Avisar com:"
+                                            Style="{StaticResource LabelStyle}" />
+                                        <TextBlock x:Name="lblWarningSecsValue"
+                                            Text="30s" DockPanel.Dock="Right"
+                                            Foreground="#FFD700" FontSize="10"
+                                            FontWeight="Bold" VerticalAlignment="Center"
+                                            Margin="5,0,0,0" />
+                                        <Slider x:Name="sliderWarningSecs"
+                                            Minimum="5" Maximum="120" Value="30"
+                                            IsEnabled="{Binding ElementName=chkEnableWarning, Path=IsChecked}"
+                                            ValueChanged="SliderWarningSecs_Changed" />
+                                    </DockPanel>
+                                    <TextBlock Text="segundos antes do fim do timer"
+                                        Foreground="#888" FontSize="8"
+                                        Margin="0,4,0,0" />
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Clock/Banner Settings -->
+                            <GroupBox x:Name="grpClockBanner" Header="Relógio / Letreiro"
+                                Foreground="#FFD700" FontSize="9" FontWeight="Bold"
+                                BorderBrush="#333" Padding="8" Margin="0,0,0,8">
+                                <StackPanel x:Name="tvFontControls">
+                                    <TextBlock Text="CONTROLES MODO TV" FontSize="9"
+                                        FontWeight="Bold" Foreground="#FF3333" Margin="0,0,0,6" />
+
+                                    <DockPanel Margin="0,2">
+                                        <TextBlock Text="Evento Atual:"
+                                            Style="{StaticResource LabelStyle}" />
+                                        <Slider x:Name="sliderTvEvent" Minimum="40"
+                                            Maximum="180" Value="72"
+                                            ValueChanged="SliderTvEvent_Changed" />
+                                    </DockPanel>
+
+                                    <DockPanel Margin="0,2">
+                                        <TextBlock Text="Lista Cronograma:"
+                                            Style="{StaticResource LabelStyle}" />
+                                        <Slider x:Name="sliderTvList" Minimum="14" Maximum="40"
+                                            Value="24" ValueChanged="SliderTvList_Changed" />
+                                    </DockPanel>
+
+                                    <DockPanel Margin="0,2">
+                                        <TextBlock Text="Timer LED:"
+                                            Style="{StaticResource LabelStyle}" />
+                                        <Slider x:Name="sliderTvTimer" Minimum="50"
+                                            Maximum="200" Value="96"
+                                            ValueChanged="SliderTvTimer_Changed" />
+                                    </DockPanel>
+
+                                    <DockPanel Margin="0,2">
+                                        <TextBlock Text="Relógio LED:"
+                                            Style="{StaticResource LabelStyle}" />
+                                        <Slider x:Name="sliderTvClock" Minimum="45"
+                                            Maximum="180" Value="88"
+                                            ValueChanged="SliderTvClock_Changed" />
+                                    </DockPanel>
+
+                                    <DockPanel Margin="0,2">
+                                        <TextBlock Text="Barra Horário:"
+                                            Style="{StaticResource LabelStyle}" />
+                                        <Slider x:Name="sliderTvFooter" Minimum="20"
+                                            Maximum="80" Value="38"
+                                            ValueChanged="SliderTvFooter_Changed" />
+                                    </DockPanel>
+                                </StackPanel>
+
+                            </GroupBox>
+
+
+                        </StackPanel>
+
+                        <!-- Bottom Buttons -->
+                        <Button Content="ABRIR CONTROLE MINI" Style="{StaticResource DarkBtn}"
+                            Margin="0,0,0,5" Padding="10" Click="BtnMiniController_Click" />
+                        <Button Content="ENCERRAR APLICAÇÃO" Style="{StaticResource DangerBtn}"
+                            Click="BtnQuit_Click" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+        </DockPanel>
+        
+        <!-- Camada para animação de arraste flutuante -->
+        <Canvas x:Name="dragCanvas" IsHitTestVisible="False" />
+    </Grid>
+</Window>

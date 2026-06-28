@@ -1,0 +1,1174 @@
+<Window x:Class="LetreiroDigital.Views.ThemeEditorWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:LetreiroDigital.Views"
+    Title="Editor de Temas WYSIWYG"
+    Height="800" Width="1500"
+    WindowStartupLocation="CenterScreen"
+    Background="#1E1E1E"
+    ResizeMode="CanResize">
+
+    <Window.Resources>
+        <!-- Design System: Cores Premium -->
+        <SolidColorBrush x:Key="AccentBrush" Color="#10B981" /> <!-- Emerald 500 -->
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="#059669" />
+        <SolidColorBrush x:Key="PanelBackground" Color="#18181B" />
+        <SolidColorBrush x:Key="ControlBackground" Color="#27272A" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#3F3F46" />
+        <SolidColorBrush x:Key="TextPrimary" Color="#F4F4F5" />
+        <SolidColorBrush x:Key="TextSecondary" Color="#A1A1AA" />
+
+        <!-- Estilos de Texto -->
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="ExtraBold" />
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+            <Setter Property="Margin" Value="0,25,0,12" />
+        </Style>
+
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+
+        <Style x:Key="ValueLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+
+        <!-- Controles Customizados -->
+        <Style x:Key="InputBox" TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource ControlBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="12" />
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="4" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <DataTemplate x:Key="FontItemTemplate">
+            <TextBlock Text="{Binding Name}" FontFamily="{Binding Family}" FontSize="15" Padding="0,2" />
+        </DataTemplate>
+
+        <Style x:Key="ComboStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="{StaticResource ControlBackground}" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="Padding" Value="6" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="{StaticResource PanelBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}" Margin="4,2">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource BorderBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource AccentBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderStyle" TargetType="Slider">
+            <Setter Property="Margin" Value="0,5,0,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Padding" Value="15,8" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <Style x:Key="GhostBtn" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="4" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <Style x:Key="ColorPickerBtn" TargetType="Button">
+            <Setter Property="Width" Value="34" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Margin" Value="8,0,0,0" />
+            <Setter Property="Background" Value="{StaticResource ControlBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Content" Value="🎨" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="17" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <Style x:Key="SectionSeparator" TargetType="Border">
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="Margin" Value="0,20,0,5" />
+            <Setter Property="Opacity" Value="0.3" />
+        </Style>
+        <!-- Estilos para Seletor de Layout (Cards) -->
+        <Style x:Key="LayoutCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource ControlBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                    <Setter Property="Background" Value="#2A2A2D" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="BadgeEstavel" TargetType="Border">
+            <Setter Property="Background" Value="#065F46" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="6,2" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+
+        <Style x:Key="BadgeDev" TargetType="Border">
+            <Setter Property="Background" Value="#374151" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="6,2" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="#09090B"> <!-- Zinc 950 -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="420" /> <!-- Painel um pouco mais largo para respiro -->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ═══════════ PAINEL ESQUERDO: CONTROLES ═══════════ -->
+        <Border Grid.Column="0" Background="{StaticResource PanelBackground}"
+            BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Header de Gestão -->
+                <Border Padding="20,15" Background="#111111"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <TextBlock Text="THEME STUDIO" FontWeight="Black" FontSize="18"
+                            Foreground="White" />
+                        <TextBlock Text="Personalize a experiência visual"
+                            Foreground="{StaticResource TextSecondary}" FontSize="10"
+                            Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20,0,20,20">
+                    <StackPanel>
+                        <!-- ═══════════ NEW: LAYOUT STUDIO ═══════════ -->
+                        <TextBlock Text="LAYOUT STUDIO" Style="{StaticResource SectionHeader}" />
+
+                        <!-- Layout 1: PADRÃO (ESTÁVEL) -->
+                        <Border Style="{StaticResource LayoutCard}" Padding="12"
+                            BorderBrush="{StaticResource AccentBrush}" BorderThickness="2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Miniatura -->
+                                <Border Background="#111" CornerRadius="4" Height="45">
+                                    <Canvas Width="60" Height="30" HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        <Rectangle Fill="{StaticResource AccentBrush}" Width="40"
+                                            Height="10" Canvas.Top="0" Canvas.Left="10" />
+                                        <Rectangle Fill="White" Width="15" Height="15"
+                                            Canvas.Top="12" Canvas.Left="10" Opacity="0.5" />
+                                        <Rectangle Fill="White" Width="20" Height="5"
+                                            Canvas.Top="12" Canvas.Left="30" Opacity="0.3" />
+                                        <Rectangle Fill="White" Width="20" Height="5"
+                                            Canvas.Top="20" Canvas.Left="30" Opacity="0.3" />
+                                    </Canvas>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                                    <TextBlock Text="MODO TV PADRÃO" FontWeight="Bold"
+                                        Foreground="White" FontSize="11" />
+                                    <TextBlock Text="Otimizado para telão e TV"
+                                        Foreground="{StaticResource TextSecondary}" FontSize="9"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <Border Style="{StaticResource BadgeEstavel}">
+                                    <TextBlock Text="ESTÁVEL" Foreground="#34D399" FontSize="8"
+                                        FontWeight="Black" />
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Layout 2: CINEMATIC -->
+                        <Border Style="{StaticResource LayoutCard}" Padding="12" Opacity="0.6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Background="#111" CornerRadius="4" Height="45">
+                                    <Rectangle Fill="{StaticResource BorderBrush}" Width="50"
+                                        Height="2" VerticalAlignment="Bottom" Margin="0,0,0,5" />
+                                </Border>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                                    <TextBlock Text="CINEMATIC WIDE" FontWeight="Bold"
+                                        Foreground="White" FontSize="11" />
+                                    <TextBlock Text="Foco total na imagem de fundo"
+                                        Foreground="{StaticResource TextSecondary}" FontSize="9" />
+                                </StackPanel>
+                                <Border Style="{StaticResource BadgeDev}">
+                                    <TextBlock Text="EM BREVE" Foreground="#9CA3AF" FontSize="8"
+                                        FontWeight="Black" />
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Layout 3: LED BOARD -->
+                        <Border Style="{StaticResource LayoutCard}" Padding="12" Opacity="0.6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Background="#111" CornerRadius="4" Height="45">
+                                    <UniformGrid Columns="3" Margin="5">
+                                        <Rectangle Fill="Gray" Margin="2" />
+                                        <Rectangle Fill="Gray" Margin="2" />
+                                        <Rectangle Fill="Gray" Margin="2" />
+                                    </UniformGrid>
+                                </Border>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                                    <TextBlock Text="LED MATRIX BOARD" FontWeight="Bold"
+                                        Foreground="White" FontSize="11" />
+                                    <TextBlock Text="Estilo letreiro digital clássico"
+                                        Foreground="{StaticResource TextSecondary}" FontSize="9" />
+                                </StackPanel>
+                                <Border Style="{StaticResource BadgeDev}">
+                                    <TextBlock Text="DEV" Foreground="#9CA3AF" FontSize="8"
+                                        FontWeight="Black" />
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Outros layouts como itens de lista simples para economizar espaço -->
+                        <Expander Header="VER MAIS 7 OPÇÕES"
+                            Foreground="{StaticResource TextSecondary}" FontSize="10"
+                            Margin="0,5,0,0">
+                            <StackPanel Margin="0,10,0,0">
+                                <TextBlock Text="• Split View (Dual Content)" Margin="0,5"
+                                    Foreground="{StaticResource TextSecondary}" Opacity="0.5" />
+                                <TextBlock Text="• Minimalist (Clock Only)" Margin="0,5"
+                                    Foreground="{StaticResource TextSecondary}" Opacity="0.5" />
+                                <TextBlock Text="• News Ticker (L-Shape)" Margin="0,5"
+                                    Foreground="{StaticResource TextSecondary}" Opacity="0.5" />
+                                <TextBlock Text="• Social Feed Style" Margin="0,5"
+                                    Foreground="{StaticResource TextSecondary}" Opacity="0.5" />
+                                <TextBlock Text="• Vertical Signage (9:16)" Margin="0,5"
+                                    Foreground="{StaticResource TextSecondary}" Opacity="0.5" />
+                                <TextBlock Text="• Kiosk Mode" Margin="0,5"
+                                    Foreground="{StaticResource TextSecondary}" Opacity="0.5" />
+                                <TextBlock Text="• Emergency Alert Layout" Margin="0,5"
+                                    Foreground="{StaticResource TextSecondary}" Opacity="0.5" />
+                            </StackPanel>
+                        </Expander>
+
+                        <Border Style="{StaticResource SectionSeparator}" />
+
+                        <!-- ═══════════ 1. GESTOR DE TEMAS ═══════════ -->
+                        <TextBlock Text="GESTOR DE TEMAS" Style="{StaticResource SectionHeader}"
+                            Margin="0,15,0,12" />
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Nome do Tema:" Style="{StaticResource LabelStyle}" />
+                            <TextBox x:Name="txtThemeName" Style="{StaticResource InputBox}" />
+                        </StackPanel>
+
+                        <UniformGrid Columns="3" Margin="0,0,0,15">
+                            <Button Content="Novo" Click="BtnNew_Click"
+                                Style="{StaticResource GhostBtn}" Margin="0,0,4,0" />
+                            <Button Content="Salvar" Click="BtnSave_Click"
+                                Style="{StaticResource PrimaryBtn}" Margin="2,0" />
+                            <Button Content="Excluir" Click="BtnDelete_Click"
+                                Style="{StaticResource GhostBtn}" Margin="4,0,0,0"
+                                Foreground="#EF4444" />
+                        </UniformGrid>
+
+                        <TextBlock Text="Temas Salvos:" Style="{StaticResource LabelStyle}" />
+                        <ListBox x:Name="lstThemes" Height="110"
+                            Background="{StaticResource ControlBackground}"
+                            Foreground="{StaticResource TextPrimary}" BorderThickness="1"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            SelectionChanged="LstThemes_SelectionChanged" Margin="0,0,0,10">
+                            <ListBox.Resources>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="10,6" />
+                                </Style>
+                            </ListBox.Resources>
+                        </ListBox>
+
+                        <Border Style="{StaticResource SectionSeparator}" />
+
+                        <!-- ═══════════ 2. FONTE DO TÍTULO ═══════════ -->
+                        <TextBlock Text="FONTES DO TÍTULO" Style="{StaticResource SectionHeader}" />
+
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Text="Família da Fonte:" Style="{StaticResource LabelStyle}" />
+                            <ComboBox x:Name="cboTitleFont" Style="{StaticResource ComboStyle}"
+                                ItemTemplate="{StaticResource FontItemTemplate}"
+                                SelectionChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <!-- Peso -->
+                            <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                                <TextBlock Text="Peso:" Style="{StaticResource LabelStyle}" />
+                                <ComboBox x:Name="cboTitleWeight"
+                                    Style="{StaticResource ComboStyle}"
+                                    SelectionChanged="OnPropertyChanged">
+                                    <ComboBoxItem Content="Normal" />
+                                    <ComboBoxItem Content="Bold" />
+                                    <ComboBoxItem Content="Black" IsSelected="True" />
+                                    <ComboBoxItem Content="Light" />
+                                    <ComboBoxItem Content="ExtraLight" />
+                                </ComboBox>
+                            </StackPanel>
+                            <!-- Estilo -->
+                            <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                                <TextBlock Text="Estilo:" Style="{StaticResource LabelStyle}" />
+                                <ComboBox x:Name="cboTitleStyle" Style="{StaticResource ComboStyle}"
+                                    SelectionChanged="OnPropertyChanged">
+                                    <ComboBoxItem Content="Normal" IsSelected="True" />
+                                    <ComboBoxItem Content="Italic" />
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Margin="0,10,0,15">
+                            <Grid>
+                                <TextBlock Text="Tamanho do Título:"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblTitleSizeVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderTitleSize" Minimum="20" Maximum="150" Value="72"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Cor do Título:" Style="{StaticResource LabelStyle}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="txtTitleColor" Text="#FFFFFF"
+                                    Style="{StaticResource InputBox}"
+                                    TextChanged="OnPropertyChanged" />
+                                <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                    Click="BtnPickColor_Click" Tag="Title" />
+                            </Grid>
+                        </StackPanel>
+
+                        <Border Style="{StaticResource SectionSeparator}" />
+
+                        <!-- ═══════════ 3. FONTE DO CORPO ═══════════ -->
+                        <TextBlock Text="FONTE DO CORPO" Style="{StaticResource SectionHeader}" />
+
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Text="Família da Fonte:" Style="{StaticResource LabelStyle}" />
+                            <ComboBox x:Name="cboBodyFont" Style="{StaticResource ComboStyle}"
+                                ItemTemplate="{StaticResource FontItemTemplate}"
+                                SelectionChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,10,0,15">
+                            <Grid>
+                                <TextBlock Text="Tamanho do Texto:"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblBodySizeVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderBodySize" Minimum="16" Maximum="100" Value="48"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Cor do Texto:" Style="{StaticResource LabelStyle}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="txtBodyColor" Text="#E0E0E0"
+                                    Style="{StaticResource InputBox}"
+                                    TextChanged="OnPropertyChanged" />
+                                <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                    Click="BtnPickColor_Click" Tag="Body" />
+                            </Grid>
+                        </StackPanel>
+
+                        <Border Style="{StaticResource SectionSeparator}" />
+
+                        <!-- ═══════════ 4. FONTES DO MODO TV ═══════════ -->
+                        <TextBlock Text="SISTEMA TV &amp; LED"
+                            Style="{StaticResource SectionHeader}" />
+
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Text="Fonte Digital (Timer/Relógio):"
+                                Style="{StaticResource LabelStyle}" />
+                            <ComboBox x:Name="cboDigitalFont" Style="{StaticResource ComboStyle}"
+                                ItemTemplate="{StaticResource FontItemTemplate}"
+                                SelectionChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,8,0,15">
+                            <TextBlock Text="Fonte Rodapé (LED Board):"
+                                Style="{StaticResource LabelStyle}" />
+                            <ComboBox x:Name="cboFooterFont" Style="{StaticResource ComboStyle}"
+                                ItemTemplate="{StaticResource FontItemTemplate}"
+                                SelectionChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,12">
+                            <Grid>
+                                <TextBlock Text="Tamanho do Timer:"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblTimerSizeVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderTimerSize" Minimum="40" Maximum="200" Value="96"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,12">
+                            <Grid>
+                                <TextBlock Text="Tamanho do Relógio:"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblClockSizeVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderClockSize" Minimum="40" Maximum="200" Value="88"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,12">
+                            <Grid>
+                                <TextBlock Text="Tamanho do Rodapé:"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblFooterSizeVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderFooterSize" Minimum="16" Maximum="80" Value="38"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+                        <Border Style="{StaticResource SectionSeparator}" />
+
+                        <!-- ═══════════ 5. ALINHAMENTO ═══════════ -->
+                        <TextBlock Text="↔  ALINHAMENTO" Style="{StaticResource SectionHeader}" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                                <TextBlock Text="Horizontal:" Style="{StaticResource LabelStyle}" />
+                                <ComboBox x:Name="cboAlignment" Style="{StaticResource ComboStyle}"
+                                    SelectionChanged="OnPropertyChanged">
+                                    <ComboBoxItem Content="Esquerda" />
+                                    <ComboBoxItem Content="Centro" IsSelected="True" />
+                                    <ComboBoxItem Content="Direita" />
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                                <TextBlock Text="Vertical:" Style="{StaticResource LabelStyle}" />
+                                <ComboBox x:Name="cboVerticalAlign"
+                                    Style="{StaticResource ComboStyle}"
+                                    SelectionChanged="OnPropertyChanged">
+                                    <ComboBoxItem Content="Topo" />
+                                    <ComboBoxItem Content="Centro" IsSelected="True" />
+                                    <ComboBoxItem Content="Inferior" />
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Style="{StaticResource SectionSeparator}" />
+
+                        <!-- ═══════════ 6. CORES E SOMBRAS ═══════════ -->
+                        <TextBlock Text="CORES DA TELA" Style="{StaticResource SectionHeader}" />
+
+                        <TextBlock Text="Cores dos Painéis" Style="{StaticResource LabelStyle}"
+                            Foreground="{StaticResource AccentBrush}" Margin="0,5,0,10" />
+                        <UniformGrid Columns="2" Margin="0,0,0,15">
+                            <StackPanel Margin="0,0,5,0">
+                                <TextBlock Text="Principal:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtPanelPrimaryColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="PanelPrimary" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="Lateral:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtPanelSecondaryColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="PanelSecondary" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <TextBlock Text="Textos e Labels" Style="{StaticResource LabelStyle}"
+                            Foreground="{StaticResource AccentBrush}" Margin="0,5,0,10" />
+                        <UniformGrid Columns="2" Margin="0,0,0,15">
+                            <StackPanel Margin="0,0,5,0">
+                                <TextBlock Text="Título TV:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtEventLabelColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="EventLabel" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="Lista TV:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtScheduleHeaderColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="ScheduleHeader" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <UniformGrid Columns="2" Margin="0,0,0,15">
+                            <StackPanel Margin="0,0,5,0">
+                                <TextBlock Text="Labels Base:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtSimpleLabelColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="SimpleLabel" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="Ao Vivo:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtLiveColor" Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="LiveIndicator" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <Border Style="{StaticResource SectionSeparator}" />
+
+                        <!-- ═══════════ 7. SOMBRAS TÉCNICAS ═══════════ -->
+                        <TextBlock Text="EFFECTS STUDIO" Style="{StaticResource SectionHeader}" />
+
+                        <CheckBox x:Name="chkTitleShadow" Content="Sombra no Título"
+                            Foreground="White" FontWeight="Bold" Margin="0,0,0,10"
+                            Checked="OnPropertyChanged" Unchecked="OnPropertyChanged" />
+
+                        <StackPanel Margin="0,0,0,15">
+                            <Grid>
+                                <TextBlock Text="Intensidade (Blur):"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblShadowBlurVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderShadowBlur" Minimum="0" Maximum="40" Value="8"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+
+                            <Grid Margin="0,10,0,0">
+                                <TextBlock Text="Profundidade:" Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblShadowDepthVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderShadowDepth" Minimum="0" Maximum="30" Value="5"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+
+                            <TextBlock Text="Cor da Sombra:" Style="{StaticResource LabelStyle}"
+                                Margin="0,10,0,4" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="txtTitleShadowColor" Text="#000000"
+                                    Style="{StaticResource InputBox}"
+                                    TextChanged="OnPropertyChanged" />
+                                <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                    Click="BtnPickColor_Click" Tag="TitleShadow" Width="28"
+                                    Height="28" Margin="4,0,0,0" />
+                            </Grid>
+                        </StackPanel>
+
+                        <TextBlock Text="LED e Cronograma" Style="{StaticResource LabelStyle}"
+                            Foreground="{StaticResource AccentBrush}" Margin="0,5,0,10" />
+                        <UniformGrid Columns="2" Margin="0,0,0,15">
+                            <StackPanel Margin="0,0,5,0">
+                                <TextBlock Text="Timer Digital:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtTimerColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="DigitalTimer" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="Relógio:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtClockColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="DigitalClock" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <UniformGrid Columns="2" Margin="0,0,0,15">
+                            <StackPanel Margin="0,0,5,0">
+                                <TextBlock Text="Item Ativo:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtScheduleActiveColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="ScheduleActive" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="Item Inativo:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtScheduleInactiveColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="ScheduleInactive" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <TextBlock Text="Rodapé e Sistema" Style="{StaticResource LabelStyle}"
+                            Foreground="{StaticResource AccentBrush}" Margin="0,5,0,10" />
+                        <UniformGrid Columns="2" Margin="0,0,0,15">
+                            <StackPanel Margin="0,0,5,0">
+                                <TextBlock Text="Fundo Rodapé:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtFooterBgColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="FooterBg" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="Texto Rodapé:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtFooterTextColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="FooterText" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <Border Style="{StaticResource SectionSeparator}" />
+
+                        <!-- ═══════════ 8. BORDAS ═══════════ -->
+                        <TextBlock Text="CANAL DE BORDAS" Style="{StaticResource SectionHeader}" />
+                        <CheckBox x:Name="chkBorder" Content="Ativar Moldura" Foreground="White"
+                            FontWeight="Bold" Margin="0,0,0,10" Checked="OnPropertyChanged"
+                            Unchecked="OnPropertyChanged" />
+
+                        <StackPanel Margin="0,5,0,15">
+                            <Grid>
+                                <TextBlock Text="Espessura da Moldura:"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblBorderThicknessVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderBorderThickness" Minimum="0" Maximum="10"
+                                Value="2" Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+
+                            <TextBlock Text="Cor da Moldura:" Style="{StaticResource LabelStyle}"
+                                Margin="0,10,0,4" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="txtBorderColor" Text="#10B981"
+                                    Style="{StaticResource InputBox}"
+                                    TextChanged="OnPropertyChanged" />
+                                <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                    Click="BtnPickColor_Click" Tag="Border" Width="28" Height="28"
+                                    Margin="4,0,0,0" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,15">
+                            <Grid>
+                                <TextBlock Text="Raio dos Cantos:"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblBorderRadiusVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderBorderRadius" Minimum="0" Maximum="30" Value="10"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+
+                        <!-- ═══════════ 9. FUNDO CANVAS ═══════════ -->
+                        <TextBlock Text="BACKDROP STUDIO" Style="{StaticResource SectionHeader}" />
+
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Text="Modo de Preenchimento:"
+                                Style="{StaticResource LabelStyle}" />
+                            <ComboBox x:Name="cboBackgroundType" Style="{StaticResource ComboStyle}"
+                                SelectionChanged="OnPropertyChanged">
+                                <ComboBoxItem Content="Cor Sólida" IsSelected="True" />
+                                <ComboBoxItem Content="Gradiente" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <UniformGrid Columns="2" Margin="0,5,0,10">
+                            <StackPanel Margin="0,0,5,0">
+                                <TextBlock Text="Cor Inicial:" Style="{StaticResource LabelStyle}"
+                                    FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtBackgroundColor"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="Background" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="Cor Final (Grad):"
+                                    Style="{StaticResource LabelStyle}" FontSize="10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtGradientEnd"
+                                        Style="{StaticResource InputBox}"
+                                        TextChanged="OnPropertyChanged" />
+                                    <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                        Click="BtnPickColor_Click" Tag="GradientEnd" Width="28"
+                                        Height="28" Margin="4,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <StackPanel Margin="0,5,0,15">
+                            <Grid>
+                                <TextBlock Text="Opacidade do Fundo:"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblBgOpacityVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderBgOpacity" Minimum="0" Maximum="1" Value="1"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" TickFrequency="0.05"
+                                IsSnapToTickEnabled="True" />
+                        </StackPanel>
+
+                        <Border Style="{StaticResource SectionSeparator}" />
+
+                        <!-- ═══════════ 10. LAYOUT E MARGENS ═══════════ -->
+                        <TextBlock Text="LAYOUT ENGINE" Style="{StaticResource SectionHeader}" />
+
+                        <UniformGrid Columns="2" Margin="0,0,0,10">
+                            <StackPanel Margin="0,0,5,10">
+                                <Grid>
+                                    <TextBlock Text="Topo:" Style="{StaticResource LabelStyle}" />
+                                    <TextBlock x:Name="lblMarginTopVal"
+                                        Style="{StaticResource ValueLabel}" />
+                                </Grid>
+                                <Slider x:Name="sliderMarginTop" Minimum="0" Maximum="200"
+                                    Style="{StaticResource SliderStyle}"
+                                    ValueChanged="OnPropertyChanged" />
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,10">
+                                <Grid>
+                                    <TextBlock Text="Base:" Style="{StaticResource LabelStyle}" />
+                                    <TextBlock x:Name="lblMarginBottomVal"
+                                        Style="{StaticResource ValueLabel}" />
+                                </Grid>
+                                <Slider x:Name="sliderMarginBottom" Minimum="0" Maximum="200"
+                                    Style="{StaticResource SliderStyle}"
+                                    ValueChanged="OnPropertyChanged" />
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <UniformGrid Columns="2" Margin="0,0,0,15">
+                            <StackPanel Margin="0,0,5,10">
+                                <Grid>
+                                    <TextBlock Text="Esquerda:" Style="{StaticResource LabelStyle}" />
+                                    <TextBlock x:Name="lblMarginLeftVal"
+                                        Style="{StaticResource ValueLabel}" />
+                                </Grid>
+                                <Slider x:Name="sliderMarginLeft" Minimum="0" Maximum="200"
+                                    Style="{StaticResource SliderStyle}"
+                                    ValueChanged="OnPropertyChanged" />
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,10">
+                                <Grid>
+                                    <TextBlock Text="Direita:" Style="{StaticResource LabelStyle}" />
+                                    <TextBlock x:Name="lblMarginRightVal"
+                                        Style="{StaticResource ValueLabel}" />
+                                </Grid>
+                                <Slider x:Name="sliderMarginRight" Minimum="0" Maximum="200"
+                                    Style="{StaticResource SliderStyle}"
+                                    ValueChanged="OnPropertyChanged" />
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <Grid>
+                                <TextBlock Text="Espaço entre Itens:"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblPaddingVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderPadding" Minimum="0" Maximum="100" Value="20"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <Grid>
+                                <TextBlock Text="Opacidade (Título):"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblTitleShadowOpacityVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderTitleShadowOpacity" Minimum="0" Maximum="1"
+                                Value="0.8" Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" TickFrequency="0.05"
+                                IsSnapToTickEnabled="True" />
+                        </StackPanel>
+
+                        <TextBlock Text="Sombra no Corpo" Style="{StaticResource LabelStyle}"
+                            Foreground="{StaticResource AccentBrush}" Margin="0,5,0,10" />
+                        <CheckBox x:Name="chkBodyShadow" Content="Ativar Sombra no Corpo"
+                            Foreground="White" FontWeight="Bold" Margin="0,0,0,10"
+                            Checked="OnPropertyChanged" Unchecked="OnPropertyChanged" />
+
+                        <StackPanel Margin="0,0,0,15">
+                            <Grid>
+                                <TextBlock Text="Intensidade (Body):"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblBodyShadowBlurVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderBodyShadowBlur" Minimum="0" Maximum="40" Value="6"
+                                Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+
+                            <TextBlock Text="Cor da Sombra (Corpo):"
+                                Style="{StaticResource LabelStyle}" Margin="0,10,0,4" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="txtBodyShadowColor" Text="#000000"
+                                    Style="{StaticResource InputBox}"
+                                    TextChanged="OnPropertyChanged" />
+                                <Button Grid.Column="1" Style="{StaticResource ColorPickerBtn}"
+                                    Click="BtnPickColor_Click" Tag="BodyShadow" Width="28"
+                                    Height="28" Margin="4,0,0,0" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <Grid>
+                                <TextBlock Text="Opacidade (Body):"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblBodyShadowOpacityVal"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderBodyShadowOpacity" Minimum="0" Maximum="1"
+                                Value="0.6" Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" TickFrequency="0.05"
+                                IsSnapToTickEnabled="True" />
+                        </StackPanel>
+
+                        <Border Style="{StaticResource SectionSeparator}" />
+
+                        <!-- ═══════════ 11. TRANSIÇÕES ═══════════ -->
+                        <TextBlock Text="MOTION GRAPHICS" Style="{StaticResource SectionHeader}" />
+
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Text="Tipo de Transição:" Style="{StaticResource LabelStyle}" />
+                            <ComboBox x:Name="cboTransitionType" Style="{StaticResource ComboStyle}"
+                                SelectionChanged="OnPropertyChanged">
+                                <ComboBoxItem Content="Fade" IsSelected="True" />
+                                <ComboBoxItem Content="Slide" />
+                                <ComboBoxItem Content="Nenhuma" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,20">
+                            <Grid>
+                                <TextBlock Text="Velocidade (s):"
+                                    Style="{StaticResource LabelStyle}" />
+                                <TextBlock x:Name="lblTransitionValue"
+                                    Style="{StaticResource ValueLabel}" />
+                            </Grid>
+                            <Slider x:Name="sliderTransitionDuration" Minimum="0" Maximum="3"
+                                Value="0.5" TickFrequency="0.1" Style="{StaticResource SliderStyle}"
+                                ValueChanged="OnPropertyChanged" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <!-- ═══════════ PAINEL DIREITO: STUDIO PREVIEW ═══════════ -->
+        <Grid Grid.Column="1" Background="#0C0C0E">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Top Toolbar -->
+            <Border Grid.Row="0" Background="#111111" Padding="25,18"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Width="12" Height="12" Background="#EF4444" CornerRadius="6"
+                            Margin="0,0,8,0" />
+                        <Border Width="12" Height="12" Background="#F59E0B" CornerRadius="6"
+                            Margin="0,0,8,0" />
+                        <Border Width="12" Height="12" Background="#10B981" CornerRadius="6"
+                            Margin="0,0,15,0" />
+                        <TextBlock Text="PREVIEW EM TEMPO REAL" FontWeight="Black" FontSize="12"
+                            Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <Border HorizontalAlignment="Right"
+                        Background="{StaticResource ControlBackground}" Padding="12,4"
+                        CornerRadius="4" BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1">
+                        <TextBlock Text="1920 x 1080 (MOCKUP)"
+                            Foreground="{StaticResource AccentBrush}" FontSize="10"
+                            FontWeight="Bold" />
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Preview Studio Area -->
+            <Grid Grid.Row="1">
+                <Border Opacity="0.4">
+                    <Border.Background>
+                        <RadialGradientBrush Center="0.5,0.5" GradientOrigin="0.5,0.5" RadiusX="0.7"
+                            RadiusY="0.7">
+                            <GradientStop Color="#1E1B4B" Offset="0" />
+                            <GradientStop Color="Transparent" Offset="1" />
+                        </RadialGradientBrush>
+                    </Border.Background>
+                </Border>
+
+                <Border x:Name="previewBorder" Width="850" Height="478" Background="Black"
+                    CornerRadius="8" BorderBrush="#444" BorderThickness="12"
+                    VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="50" ShadowDepth="20" Opacity="0.6"
+                            Color="Black" />
+                    </Border.Effect>
+                    <Grid>
+                        <Viewbox Stretch="Uniform">
+                            <local:TvModeView x:Name="previewControl" Width="1920" Height="1080" />
+                        </Viewbox>
+                        <Border IsHitTestVisible="False" Opacity="0.05">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="White" Offset="0" />
+                                    <GradientStop Color="Transparent" Offset="0.4" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Bottom Actions -->
+            <Border Grid.Row="2" Background="#111111" Padding="25,20"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+                <Grid>
+                    <TextBlock Text="As alterações são visualizadas instantaneamente"
+                        VerticalAlignment="Center" Foreground="{StaticResource TextSecondary}"
+                        FontSize="11" FontStyle="Italic" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="CANCELAR" Click="BtnCancel_Click"
+                            Style="{StaticResource GhostBtn}" Width="120" Margin="0,0,12,0" />
+                        <Button Content="APLICAR TEMA" Click="BtnApply_Click"
+                            Style="{StaticResource PrimaryBtn}" Width="180" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

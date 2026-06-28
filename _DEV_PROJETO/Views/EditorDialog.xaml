@@ -1,0 +1,48 @@
+<Window x:Class="LetreiroDigital.Views.EditorDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Editor de Item"
+    Width="400" SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
+    Background="#1E1E1E"
+    ResizeMode="NoResize">
+
+    <StackPanel Margin="20">
+        <TextBlock Text="EDITOR DE ITEM" FontSize="14" FontWeight="Bold" Foreground="#FFD700"
+            Margin="0,0,0,15" />
+
+        <TextBlock Text="Horário (ex: 18:20 as 18:25)" Foreground="#B0B0B0" FontSize="10"
+            Margin="0,2" />
+        <TextBox x:Name="txtTime" Background="#2D2D2D" Foreground="White" BorderBrush="#444"
+            Padding="6" FontSize="12" />
+
+        <TextBlock Text="Sigla" Foreground="#B0B0B0" FontSize="10" Margin="0,8,0,2" />
+        <TextBox x:Name="txtSigla" Background="#2D2D2D" Foreground="White" BorderBrush="#444"
+            Padding="6" FontSize="12" />
+
+        <TextBlock Text="Conteúdo" Foreground="#B0B0B0" FontSize="10" Margin="0,8,0,2" />
+        <TextBox x:Name="txtContent" Background="#2D2D2D" Foreground="White" BorderBrush="#444"
+            Padding="6" FontSize="12" />
+
+        <TextBlock Text="Duração (ex: 5min)" Foreground="#B0B0B0" FontSize="10" Margin="0,8,0,2" />
+        <TextBox x:Name="txtDuration" Background="#2D2D2D" Foreground="White" BorderBrush="#444"
+            Padding="6" FontSize="12" />
+
+        <TextBlock Text="Líder" Foreground="#B0B0B0" FontSize="10" Margin="0,8,0,2" />
+        <TextBox x:Name="txtLead" Background="#2D2D2D" Foreground="White" BorderBrush="#444"
+            Padding="6" FontSize="12" />
+
+        <TextBlock Text="Cor (hex)" Foreground="#B0B0B0" FontSize="10" Margin="0,8,0,2" />
+        <TextBox x:Name="txtColor" Background="#2D2D2D" Foreground="White" BorderBrush="#444"
+            Padding="6" FontSize="12" Text="#FFEB3B" />
+
+        <DockPanel Margin="0,20,0,0">
+            <Button Content="SALVAR" DockPanel.Dock="Right" Background="#4CAF50" Foreground="White"
+                FontWeight="Bold" Padding="16,8" Click="BtnSave_Click" Cursor="Hand"
+                BorderThickness="0" />
+            <Button Content="CANCELAR" DockPanel.Dock="Left" Background="#444" Foreground="#CCC"
+                FontWeight="Bold" Padding="16,8" Click="BtnCancel_Click" Cursor="Hand"
+                BorderThickness="0" />
+        </DockPanel>
+    </StackPanel>
+</Window>

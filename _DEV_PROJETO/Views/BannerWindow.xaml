@@ -1,0 +1,19 @@
+<Window x:Class="LetreiroDigital.Views.BannerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Letreiro Digital - Banner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Background="Transparent">
+
+    <Border x:Name="rootBorder" Background="Red" ClipToBounds="True">
+        <Canvas x:Name="scrollCanvas" ClipToBounds="True">
+            <TextBlock x:Name="scrollText" Text="AGUARDANDO..."
+                       FontSize="40" FontWeight="Bold"
+                       Foreground="White" FontFamily="Segoe UI Black"
+                       Canvas.Top="5"/>
+        </Canvas>
+    </Border>
+</Window>
