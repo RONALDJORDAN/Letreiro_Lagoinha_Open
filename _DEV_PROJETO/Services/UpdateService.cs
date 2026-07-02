@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -40,7 +40,7 @@ namespace LetreiroDigital.Services
         /// Pode ser Firebase Hosting, Firebase Storage, AWS S3, GitHub Releases, etc.
         /// </summary>
         private const string VersionJsonUrl =
-            "https://letreirodigital-88f8e-default-rtdb.firebaseio.com/app_update.json";
+            "https://raw.githubusercontent.com/RONALDJORDAN/Letreiro_Lagoinha_Open/main/version.json";
 
         /// <summary>
         /// Versao atual do aplicativo (deve bater com o assembly).

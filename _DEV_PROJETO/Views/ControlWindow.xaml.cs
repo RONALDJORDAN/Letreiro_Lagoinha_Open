@@ -62,7 +62,6 @@ namespace LetreiroDigital.Views
         private async Task CheckStatusAsync()
         {
             await CheckConnectionStatusAsync();
-            await CheckSubscriptionStatusAsync();
         }
 
         private async Task CheckConnectionStatusAsync()
@@ -96,99 +95,6 @@ namespace LetreiroDigital.Views
                     dotConnection.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F44336"));
                     lblConnectionStatus.Text = "Offline";
                     lblConnectionStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F44336"));
-                });
-            }
-        }
-
-        private async Task CheckSubscriptionStatusAsync()
-        {
-            try
-            {
-                // Lê a licença do Realtime Database (mesmo banco que o admin usa)
-                string licenseKey = _vm?.LicenseKey ?? "";
-                if (string.IsNullOrEmpty(licenseKey))
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        dotSubscription.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#888"));
-                        lblSubscriptionStatus.Text = "Não ativada";
-                        lblSubscriptionStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#888"));
-                    });
-                    return;
-                }
-
-                using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(8) };
-                string rtdbUrl = $"https://letreirodigital-88f8e-default-rtdb.firebaseio.com/licencas/{licenseKey}.json";
-                var response = await http.GetStringAsync(rtdbUrl);
-
-                if (string.IsNullOrEmpty(response) || response == "null")
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        dotSubscription.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#888"));
-                        lblSubscriptionStatus.Text = "Não encontrada";
-                        lblSubscriptionStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#888"));
-                    });
-                    return;
-                }
-
-                var doc = System.Text.Json.JsonDocument.Parse(response);
-                var root = doc.RootElement;
-
-                string status = root.TryGetProperty("status", out var sProp) ? sProp.GetString() ?? "" : "";
-                string dataExpiracao = root.TryGetProperty("data_expiracao", out var eProp) ? eProp.GetString() ?? "" : "";
-                string dataInicio = root.TryGetProperty("data_inicio", out var iProp) ? iProp.GetString() ?? "" : "";
-                string hwid = root.TryGetProperty("hwid_vinculado", out var hProp) ? hProp.GetString() ?? "" : "";
-
-                // Verifica expiração pela data
-                bool isExpired = false;
-                DateTime? expDate = null;
-                if (!string.IsNullOrEmpty(dataExpiracao) && DateTime.TryParse(dataExpiracao, out var parsedExp))
-                {
-                    expDate = parsedExp;
-                    isExpired = parsedExp < DateTime.Today;
-                }
-
-                // Determina o status real
-                bool isActive = !string.IsNullOrEmpty(hwid) && !isExpired;
-
-                Dispatcher.Invoke(() =>
-                {
-                    if (isExpired)
-                    {
-                        dotSubscription.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F44336"));
-                        lblSubscriptionStatus.Text = $"Expirada ({expDate:dd/MM/yyyy})";
-                        lblSubscriptionStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F44336"));
-                    }
-                    else if (isActive)
-                    {
-                        dotSubscription.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
-                        lblSubscriptionStatus.Text = "Ativa";
-                        lblSubscriptionStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
-                        if (expDate.HasValue)
-                            lblSubscriptionStatus.Text += $" (até {expDate:dd/MM/yyyy})";
-                    }
-                    else if (status == "pendente_pagamento" || string.IsNullOrEmpty(hwid))
-                    {
-                        dotSubscription.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"));
-                        lblSubscriptionStatus.Text = "Pendente";
-                        lblSubscriptionStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"));
-                    }
-                    else
-                    {
-                        dotSubscription.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"));
-                        lblSubscriptionStatus.Text = "Erro ao verificar";
-                        lblSubscriptionStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"));
-                    }
-                });
-            }
-            catch
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    dotSubscription.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"));
-                    lblSubscriptionStatus.Text = "Erro ao verificar";
-                    lblSubscriptionStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"));
                 });
             }
         }
@@ -1348,6 +1254,7 @@ namespace LetreiroDigital.Views
             if (_vm == null || _suppressSliderEvents) return;
             if (rbLayout1.IsChecked == true) _vm.TvLayoutMode = 1;
             else if (rbLayout2.IsChecked == true) _vm.TvLayoutMode = 2;
+        }
         // ==================== USER THEMES (Operator UI) ====================
         private void MenuUserTheme_Click(object sender, RoutedEventArgs e)
         {
@@ -1357,6 +1264,9 @@ namespace LetreiroDigital.Views
             }
         }
 
+        private void MenuSave_Click(object sender, RoutedEventArgs e) {}
+        private void MenuReload_Click(object sender, RoutedEventArgs e) {}
+
         private void ApplyUserTheme(string themeName)
         {
             // Reset layout defaults
@@ -1364,7 +1274,6 @@ namespace LetreiroDigital.Views
             colControls.Width = new GridLength(300);
             colPreview.Width = new GridLength(1, GridUnitType.Star);
             Grid.SetColumn(paneList, 0);
-            Grid.SetColumn(panePreview, 1);
             Grid.SetColumn(paneControls, 2);
             paneControls.Visibility = Visibility.Visible;
 

@@ -298,23 +298,7 @@
                 <MenuItem Header="🛠️ Editor de Temas Público" Click="MenuThemeEditor_Click" FontWeight="Bold" />
             </MenuItem>
 
-            <MenuItem Header="➕ Adicionar" Foreground="{DynamicResource UserTextBrush}">
-lick="MenuGeneralSettings_Click" />
-                <Separator Background="#555" />
-                <MenuItem Header="Sair" Click="BtnQuit_Click" />
-            </MenuItem>
 
-                <MenuItem Header="Editor de Temas WYSIWYG" Click="MenuThemeEditor_Click"
-                    FontWeight="Bold">
-                    <MenuItem.Icon>
-                        <TextBlock Text="✨" FontSize="14" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator Background="#555" />
-                <MenuItem Header="Aplicar Tema..." Click="MenuApplyTheme_Click" />
-                <MenuItem Header="Salvar Tema Atual..." Click="MenuSaveCurrentTheme_Click" />
-                <MenuItem Header="Gerenciar Temas..." Click="MenuManageThemes_Click" />
-            </MenuItem>
 
             <MenuItem Header="⚙️ Apresentação" Foreground="{DynamicResource UserTextBrush}">
                 <MenuItem Header="Modo Tela Cheia" Click="MenuFullscreen_Click" InputGestureText="F11" />

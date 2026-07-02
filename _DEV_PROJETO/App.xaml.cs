@@ -36,6 +36,22 @@ namespace LetreiroDigital
             
             _vm.Initialize();
 
+            // ── VERIFICAÇÃO DE PRIMEIRA EXECUÇÃO (BOAS-VINDAS) ──
+            string configDir = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "LetreiroDigital", "config");
+            string firstRunFile = System.IO.Path.Combine(configDir, "first_run.json");
+
+            if (!System.IO.File.Exists(firstRunFile))
+            {
+                var welcome = new WelcomeWindow();
+                if (welcome.ShowDialog() != true)
+                {
+                    // Se o usuário fechar a janela no "X", não abre o painel.
+                    return;
+                }
+            }
+
             // ── VERIFICAÇÃO DE ATUALIZAÇÃO OBRIGATÓRIA (ANTES de abrir o app) ──
             try
             {
