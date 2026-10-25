@@ -1,317 +1,1528 @@
 <!DOCTYPE html>
-<html lang='pt-BR'>
+<html lang="pt-BR">
 
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Letreiro - Controle</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0A0E17">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Letreiro Digital • Mesa de Controle</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+
     <style>
-        body {
-            background-color: #121212;
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            padding: 10px;
+        :root {
+            --bg-dark: #0A0E17;
+            --bg-card: rgba(22, 29, 44, 0.75);
+            --bg-card-solid: #151D2C;
+            --bg-card-hover: #1E293B;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-active: rgba(0, 230, 118, 0.4);
+            
+            --text-main: #FFFFFF;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+            
+            --accent-green: #00E676;
+            --accent-green-glow: rgba(0, 230, 118, 0.35);
+            --accent-gold: #FFD700;
+            --accent-gold-glow: rgba(255, 215, 0, 0.35);
+            --accent-red: #FF3366;
+            --accent-red-glow: rgba(255, 51, 102, 0.4);
+            --accent-blue: #38BDF8;
+            --accent-purple: #A855F7;
+            --accent-orange: #FF9800;
+            
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+            
+            --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding-bottom: 50px;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            user-select: none;
         }
 
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 230, 118, 0.05) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+        }
+
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(10, 14, 23, 0.85);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, #00E676, #38BDF8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: #0A0E17;
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+        }
+
+        .brand-text h1 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-text span {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-red);
+            box-shadow: 0 0 8px var(--accent-red);
+            transition: all 0.3s ease;
+        }
+
+        .status-dot.connected {
+            background-color: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:active {
+            transform: scale(0.92);
+        }
+
+        .icon-btn.active {
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+            background: rgba(0, 230, 118, 0.1);
+        }
+
+        /* Container & Tabs */
         .container {
-            max-width: 600px;
-            margin: auto;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 16px;
         }
 
-        h2 {
-            margin: 10px 0;
-            font-size: 1.2rem;
-            color: #aaa;
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Big Timer Card */
+        .timer-card {
+            border-radius: var(--radius-lg);
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 20px;
+        }
+
+        .timer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+            opacity: 0.8;
+        }
+
+        .live-tag-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .live-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            background: rgba(0, 230, 118, 0.12);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+            color: var(--accent-green);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .live-pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulseDot 1.5s infinite;
+        }
+
+        @keyframes pulseDot {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.6); opacity: 0.4; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .service-day-pill {
+            font-size: 12px;
+            color: var(--accent-gold);
+            font-weight: 600;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .current-item-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            line-height: 1.3;
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-word;
         }
 
         .timer-display {
-            font-size: 4rem;
-            font-weight: bold;
-            font-family: monospace;
-            color: #00E676;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 4.8rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
             margin: 10px 0;
+            color: #FFFFFF;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .grid-controls {
+        .timer-display.running {
+            color: var(--accent-green);
+            text-shadow: 0 0 25px var(--accent-green-glow);
+        }
+
+        .timer-display.warning {
+            color: var(--accent-gold);
+            text-shadow: 0 0 25px var(--accent-gold-glow);
+        }
+
+        .timer-display.critical {
+            color: var(--accent-red);
+            text-shadow: 0 0 30px var(--accent-red-glow);
+            animation: blinkCrit 1s infinite alternate;
+        }
+
+        @keyframes blinkCrit {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0.7; transform: scale(0.98); }
+        }
+
+        .timer-progress-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-full);
+            margin: 18px 0 10px 0;
+            overflow: hidden;
+        }
+
+        .timer-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+            border-radius: var(--radius-full);
+            transition: width 0.4s ease;
+        }
+
+        /* Controls Grid */
+        .main-controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .btn-ctrl {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 16px 12px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-ctrl:active {
+            transform: scale(0.95);
+        }
+
+        .btn-ctrl .icon {
+            font-size: 22px;
+        }
+
+        .btn-ctrl.btn-play {
+            background: linear-gradient(135deg, #00E676, #00B0FF);
+            color: #0A0E17;
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 230, 118, 0.4);
+        }
+
+        .btn-ctrl.btn-play.is-paused {
+            background: linear-gradient(135deg, #FF9800, #FF5722);
+            color: #FFFFFF;
+            box-shadow: 0 4px 20px rgba(255, 152, 0, 0.4);
+        }
+
+        .btn-ctrl.btn-play.is-running {
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            color: #0A0E17;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin: 16px 0 10px 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quick-time-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .btn-pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 4px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+
+        .btn-pill:active {
+            transform: scale(0.94);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-pill.btn-accent {
+            border-color: rgba(56, 189, 248, 0.3);
+            color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.08);
+        }
+
+        .btn-pill.btn-danger {
+            border-color: rgba(255, 51, 102, 0.3);
+            color: var(--accent-red);
+            background: rgba(255, 51, 102, 0.08);
+        }
+
+        .action-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 20px;
         }
 
-        .btn {
-            padding: 15px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
+        .btn-action {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 14px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             cursor: pointer;
-            font-weight: bold;
+            transition: all 0.15s ease;
+        }
+
+        .btn-action:active {
+            transform: scale(0.96);
+        }
+
+        .btn-action.btn-blackout {
+            border-color: rgba(255, 51, 102, 0.3);
+            color: #FF5252;
+            background: rgba(255, 51, 102, 0.1);
+        }
+
+        .btn-action.btn-blackout.active {
+            background: #FF5252;
+            color: #FFFFFF;
+            box-shadow: 0 0 15px rgba(255, 82, 82, 0.5);
+        }
+
+        .btn-action.btn-banner {
+            border-color: rgba(0, 230, 118, 0.3);
+            color: var(--accent-green);
+            background: rgba(0, 230, 118, 0.08);
+        }
+
+        /* Schedule Tab */
+        .day-pills-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            scrollbar-width: none;
+        }
+        .day-pills-scroll::-webkit-scrollbar { display: none; }
+
+        .day-pill-btn {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .day-pill-btn.active {
+            background: var(--accent-gold);
+            color: #0A0E17;
+            font-weight: 700;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 14px;
+        }
+
+        .search-box input {
             width: 100%;
-            touch-action: manipulation;
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 14px 12px 40px;
+            color: #FFFFFF;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
         }
 
-        .btn-play {
-            grid-column: span 2;
-            background-color: #FFD700;
-            color: #000;
-            font-size: 1.5rem;
+        .search-box input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
         }
 
-        .btn-nav {
-            background-color: #333;
-            color: #fff;
-        }
-
-        .btn-toggle {
-            background-color: #2196F3;
-            color: #fff;
-            grid-column: span 2;
-        }
-
-        .btn-stop {
-            background-color: #D32F2F;
-            color: #fff;
-            grid-column: span 2;
-            margin-top: 10px;
+        .search-box .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 16px;
         }
 
         .schedule-list {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .schedule-item {
-            background: #1e1e1e;
-            margin-bottom: 5px;
-            padding: 10px;
-            border-radius: 4px;
+        .schedule-card {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
             cursor: pointer;
-            border-left: 4px solid #333;
+            transition: all 0.15s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .schedule-card:active {
+            transform: scale(0.98);
+        }
+
+        .schedule-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background-color: var(--item-color, var(--accent-blue));
+        }
+
+        .schedule-card.active {
+            background: rgba(0, 230, 118, 0.1);
+            border-color: var(--accent-green);
+            box-shadow: 0 4px 16px rgba(0, 230, 118, 0.15);
+        }
+
+        .schedule-card.active::before {
+            background-color: var(--accent-green);
+            width: 6px;
+        }
+
+        .schedule-time-box {
+            display: flex;
+            flex-direction: column;
+            min-width: 65px;
+        }
+
+        .schedule-time {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .schedule-duration {
+            font-size: 11px;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .schedule-info {
+            flex: 1;
+        }
+
+        .schedule-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .schedule-lead {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .active-indicator {
+            display: none;
+            color: var(--accent-green);
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .schedule-card.active .active-indicator {
+            display: block;
+        }
+
+        /* Alerts Tab */
+        .alert-form {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .input-group textarea, .input-group select {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            color: #FFFFFF;
+            font-size: 14px;
+            outline: none;
+            resize: none;
+        }
+
+        .presets-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .preset-btn {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.15s ease;
+        }
+
+        .preset-btn:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Settings Tab & Sliders */
+        .slider-card {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .slider-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 8px;
         }
 
-        .schedule-item.active {
-            background: #333;
-            border-left-color: #00E676;
+        .slider-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
-        .schedule-item:hover {
-            background: #252525;
+        .slider-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .item-time {
-            font-size: 0.8rem;
-            color: #888;
-        }
-
-        .item-content {
-            font-weight: bold;
-        }
-
-        .section-title {
-            text-align: left;
-            margin-top: 30px;
-            margin-left: 5px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 5px;
-            color: #FFD700;
-        }
-
-        .sliders-container {
-            background: #1a1a1a;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-            text-align: left;
-            border: 1px solid #333;
-        }
-
-        .slider-group {
-            margin-bottom: 15px;
-        }
-
-        .slider-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            color: #ccc;
-        }
-
-        .slider-group input {
+        input[type="range"] {
             width: 100%;
-            cursor: pointer;
-            accent-color: #00E676;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-full);
+            outline: none;
         }
 
-        .status-bar {
-            position: sticky;
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        .toggles-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-toggle {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-toggle.active {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            background: rgba(0, 230, 118, 0.1);
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 14, 23, 0.92);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+            z-index: 100;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+        }
+
+        .nav-item .icon {
+            font-size: 20px;
+        }
+
+        .nav-item.active {
+            color: var(--accent-green);
+        }
+
+        /* Password Modal */
+        .modal-overlay {
+            position: fixed;
             top: 0;
-            background: #121212;
-            padding-bottom: 10px;
-            z-index: 10;
-            border-bottom: 1px solid #333;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+        }
+
+        .modal-card h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .modal-card p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            color: #FFFFFF;
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            outline: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--accent-green);
+            color: #0A0E17;
+            font-weight: 700;
+            border: none;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
-    <div class='container'>
-        <div class='status-bar'>
-            <h2 id='currentText'>Aguardando...</h2>
-            <div id='timer' class='timer-display'>--:--</div>
-        </div>
 
-        <div class='grid-controls'>
-            <button class='btn btn-play' onclick="sendCommand('playpause')">⏯️ PLAY / PAUSE</button>
-            <button class='btn btn-nav' onclick="sendCommand('prev')">⏮️ ANTERIOR</button>
-            <button class='btn btn-nav' onclick="sendCommand('next')">PRÓXIMO ⏭️</button>
-            <button class='btn btn-toggle' onclick="sendCommand('toggle_banner')">📺 LIGAR/DESLIGAR BANNER</button>
-            <button class='btn btn-stop' onclick="sendCommand('stop')">⏹️ PARAR TUDO</button>
-        </div>
-
-        <h3 class='section-title'>CONTROLES MODO TV</h3>
-        <div class='sliders-container'>
-            <div class='slider-group'>
-                <label>Evento Atual (Tamanho)</label>
-                <input type='range' id='rngEvent' min='20' max='150' onchange="setSize('TvEventSize', this.value)">
-            </div>
-            <div class='slider-group'>
-                <label>Lista Cronograma (Tamanho)</label>
-                <input type='range' id='rngList' min='12' max='60' onchange="setSize('TvListSize', this.value)">
-            </div>
-            <div class='slider-group'>
-                <label>Timer LED (Tamanho)</label>
-                <input type='range' id='rngTimer' min='40' max='200' onchange="setSize('TvTimerSize', this.value)">
-            </div>
-            <div class='slider-group'>
-                <label>Relógio LED (Tamanho)</label>
-                <input type='range' id='rngClock' min='30' max='150' onchange="setSize('TvClockSize', this.value)">
-            </div>
-            <div class='slider-group'>
-                <label>Barra Horário (Tamanho)</label>
-                <input type='range' id='rngFooter' min='10' max='80' onchange="setSize('TvFooterSize', this.value)">
+    <!-- Header -->
+    <header class="header">
+        <div class="brand">
+            <div class="brand-icon">L</div>
+            <div class="brand-text">
+                <h1>LETREIRO DIGITAL</h1>
+                <span>Mesa de Controle Web</span>
             </div>
         </div>
+        <div class="header-actions">
+            <button class="icon-btn" id="btnWakeLock" title="Manter Tela Acesa" onclick="toggleWakeLock()">
+                💡
+            </button>
+            <div class="status-badge" id="badgeStatus">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="statusText">Conectando...</span>
+            </div>
+        </div>
+    </header>
 
-        <h3 class='section-title'>CRONOGRAMA</h3>
-        <ul id='schedule' class='schedule-list'>
-            <!-- Items loaded via JS -->
-        </ul>
+    <!-- Main Container -->
+    <main class="container">
+
+        <!-- TAB 1: GERAL & CONTROLE DO TIMER -->
+        <section id="tab-control" class="tab-content active">
+            
+            <div class="timer-card glass">
+                <div class="live-tag-row">
+                    <div class="live-pill" id="liveTag">
+                        <span class="live-pulse"></span>
+                        <span id="liveStateLabel">NO AR</span>
+                    </div>
+                    <div class="service-day-pill" id="lblServiceDay">Culto Fé</div>
+                </div>
+
+                <div class="current-item-title" id="lblCurrentItem">Aguardando Seleção...</div>
+                
+                <div class="timer-display" id="lblTimer">--:--</div>
+
+                <div class="timer-progress-track">
+                    <div class="timer-progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <!-- Main Play / Next / Prev Controls -->
+            <div class="main-controls-grid">
+                <button class="btn-ctrl" onclick="sendCmd('prev')">
+                    <span class="icon">⏮️</span>
+                    <span>Anterior</span>
+                </button>
+                <button class="btn-ctrl btn-play" id="btnPlayPause" onclick="sendCmd('playpause')">
+                    <span class="icon" id="btnPlayIcon">▶️</span>
+                    <span id="btnPlayText">INICIAR</span>
+                </button>
+                <button class="btn-ctrl" onclick="sendCmd('next')">
+                    <span class="icon">⏭️</span>
+                    <span>Próximo</span>
+                </button>
+            </div>
+
+            <!-- Granular Timer Quick Actions -->
+            <div class="section-title">⏱️ Ajustes Rápidos de Tempo</div>
+            <div class="quick-time-grid">
+                <button class="btn-pill btn-accent" onclick="sendCmd('add_time_custom', { value: 60 })">+1 Min</button>
+                <button class="btn-pill btn-accent" onclick="sendCmd('add_time_custom', { value: 300 })">+5 Min</button>
+                <button class="btn-pill btn-danger" onclick="sendCmd('sub_time')">-1 Min</button>
+                <button class="btn-pill" onclick="sendCmd('reset_timer')">🔄 Reset</button>
+            </div>
+
+            <!-- Blackout and Banner Quick Actions -->
+            <div class="section-title">📺 Modos de Exibição Rápida</div>
+            <div class="action-row">
+                <button class="btn-action btn-blackout" id="btnBlackout" onclick="sendCmd('toggle_blackout')">
+                    <span>⬛</span>
+                    <span id="btnBlackoutText">Blackout (Oração)</span>
+                </button>
+                <button class="btn-action btn-banner" id="btnBanner" onclick="sendCmd('toggle_banner')">
+                    <span>📺</span>
+                    <span id="btnBannerText">Projeção TV</span>
+                </button>
+            </div>
+
+        </section>
+
+        <!-- TAB 2: CRONOGRAMA COMPLETO -->
+        <section id="tab-schedule" class="tab-content">
+            
+            <div class="day-pills-scroll" id="dayPillsContainer"></div>
+
+            <div class="search-box">
+                <span class="icon">🔍</span>
+                <input type="text" id="txtSearchSchedule" placeholder="Buscar momento ou palavra..." oninput="filterSchedule()">
+            </div>
+
+            <div class="schedule-list" id="scheduleListContainer"></div>
+
+        </section>
+
+        <!-- TAB 3: AVISOS E RECADOS AO VIVO -->
+        <section id="tab-alerts" class="tab-content">
+            
+            <div class="alert-form glass">
+                <div class="section-title" style="margin-top:0;">📢 Projetar Aviso Urgente</div>
+                
+                <div class="input-group">
+                    <label>Texto do Aviso / Recado:</label>
+                    <textarea id="txtAlertMessage" rows="3" placeholder="Ex: Placa ABC-1234 com farol ligado ou comparecer à recepção..."></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>Tempo na Tela:</label>
+                        <select id="selAlertDuration">
+                            <option value="60">1 Minuto</option>
+                            <option value="180">3 Minutos</option>
+                            <option value="300" selected>5 Minutos</option>
+                            <option value="600">10 Minutos</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>Cor do Destaque:</label>
+                        <select id="selAlertColor">
+                            <option value="#FFD700" selected>🟡 Dourado / Aviso</option>
+                            <option value="#FF3366">🔴 Vermelho / Urgente</option>
+                            <option value="#00E676">🟢 Verde / Informativo</option>
+                            <option value="#38BDF8">🔵 Azul / Geral</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-submit" onclick="sendQuickNotice()">🚀 Projetar Aviso no Telão</button>
+            </div>
+
+            <div class="section-title">⚡ Recados Pré-Definidos (Toque Rápido)</div>
+            <div class="presets-grid">
+                <button class="preset-btn" onclick="applyPreset('🚗 Atenção: Veículo com luzes acesas no estacionamento.')">
+                    <span>🚗</span>
+                    <span>Veículo com farol ligado</span>
+                </button>
+                <button class="preset-btn" onclick="applyPreset('👶 Pais do berçário / Kids, favor comparecer à recepção infantil.')">
+                    <span>👶</span>
+                    <span>Chamada dos Pais no Kids</span>
+                </button>
+                <button class="preset-btn" onclick="applyPreset('🤫 Pedimos a gentileza de manter o silêncio nos corredores.')">
+                    <span>🤫</span>
+                    <span>Silêncio nos corredores</span>
+                </button>
+                <button class="preset-btn" onclick="applyPreset('📱 Por favor, mantenham os celulares no modo silencioso.')">
+                    <span>📱</span>
+                    <span>Celulares no silencioso</span>
+                </button>
+            </div>
+
+        </section>
+
+        <!-- TAB 4: AJUSTES TV & ELEMENTOS -->
+        <section id="tab-settings" class="tab-content">
+            
+            <div class="section-title" style="margin-top:0;">👁️ Elementos Visíveis na Tela</div>
+            <div class="toggles-grid">
+                <button class="btn-toggle" id="toggleClockBtn" onclick="sendCmd('toggle_clock')">
+                    <span>🕒</span> <span>Relógio</span>
+                </button>
+                <button class="btn-toggle" id="toggleTimerBtn" onclick="sendCmd('toggle_timer')">
+                    <span>⏱️</span> <span>Cronômetro</span>
+                </button>
+                <button class="btn-toggle" id="toggleScheduleBtn" onclick="sendCmd('toggle_schedule')">
+                    <span>📜</span> <span>Cronograma</span>
+                </button>
+                <button class="btn-toggle" id="toggleEmergencyBtn" onclick="sendCmd('stop')">
+                    <span>🛑</span> <span>Parar Tudo</span>
+                </button>
+            </div>
+
+            <div class="section-title">⚠️ Aviso Visual de Término</div>
+            <div class="slider-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <span class="slider-title">Alerta Amarelo/Piscante</span>
+                    <button class="btn-pill btn-accent" id="btnToggleWarning" onclick="toggleWarningConfig()">Ativado</button>
+                </div>
+                <div class="slider-header">
+                    <span class="slider-title">Disparar faltando:</span>
+                    <span class="slider-value" id="valWarningSec">60s</span>
+                </div>
+                <input type="range" min="10" max="180" step="5" id="rangeWarningSec" oninput="onWarningSecInput(this.value)">
+            </div>
+
+            <div class="section-title">🎛️ Tamanhos de Fonte da TV (Tempo Real)</div>
+
+            <div class="slider-card">
+                <div class="slider-header">
+                    <span class="slider-title">Título do Evento Atual</span>
+                    <span class="slider-value" id="valTvEventSize">72px</span>
+                </div>
+                <input type="range" min="30" max="130" id="rangeTvEventSize" oninput="onTvSizeInput('TvEventSize', this.value, 'valTvEventSize')">
+            </div>
+
+            <div class="slider-card">
+                <div class="slider-header">
+                    <span class="slider-title">Cronômetro LED</span>
+                    <span class="slider-value" id="valTvTimerSize">96px</span>
+                </div>
+                <input type="range" min="40" max="180" id="rangeTvTimerSize" oninput="onTvSizeInput('TvTimerSize', this.value, 'valTvTimerSize')">
+            </div>
+
+            <div class="slider-card">
+                <div class="slider-header">
+                    <span class="slider-title">Relógio LED</span>
+                    <span class="slider-value" id="valTvClockSize">88px</span>
+                </div>
+                <input type="range" min="30" max="160" id="rangeTvClockSize" oninput="onTvSizeInput('TvClockSize', this.value, 'valTvClockSize')">
+            </div>
+
+            <div class="slider-card">
+                <div class="slider-header">
+                    <span class="slider-title">Lista do Cronograma Lateral</span>
+                    <span class="slider-value" id="valTvListSize">24px</span>
+                </div>
+                <input type="range" min="14" max="50" id="rangeTvListSize" oninput="onTvSizeInput('TvListSize', this.value, 'valTvListSize')">
+            </div>
+
+            <div class="slider-card">
+                <div class="slider-header">
+                    <span class="slider-title">Horário do Rodapé</span>
+                    <span class="slider-value" id="valTvFooterSize">38px</span>
+                </div>
+                <input type="range" min="16" max="70" id="rangeTvFooterSize" oninput="onTvSizeInput('TvFooterSize', this.value, 'valTvFooterSize')">
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('control', this)">
+            <span class="icon">⏱️</span>
+            <span>Controle</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('schedule', this)">
+            <span class="icon">📜</span>
+            <span>Cronograma</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('alerts', this)">
+            <span class="icon">📢</span>
+            <span>Avisos</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('settings', this)">
+            <span class="icon">🎛️</span>
+            <span>Ajustes TV</span>
+        </button>
+    </nav>
+
+    <!-- Password Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-card">
+            <h2>🔒 Acesso Protegido</h2>
+            <p>Digite a chave de acesso definida no painel do Letreiro para liberar o controle remoto.</p>
+            <input type="password" id="txtPasswordInput" class="modal-input" placeholder="SENHA" />
+            <button class="btn-submit" onclick="submitPassword()">Entrar no Controle</button>
+        </div>
     </div>
 
+    <!-- Script Logic -->
     <script>
-        // Check for key in URL
+        // State
+        let token = localStorage.getItem('letreiro_access_key') || '';
+        let lastStatus = null;
+        let wakeLock = null;
+        let isOnline = false;
+        let activeTab = 'control';
+        let scheduleRawList = [];
+        let currentEnableWarning = true;
+        let currentWarningSeconds = 60;
+
+        // Check token in URL on first access
         const urlParams = new URLSearchParams(window.location.search);
-        const urlKey = urlParams.get('key');
-        if (urlKey) {
-            localStorage.setItem('access_key', urlKey);
-            // Optional: Clean URL
-            // window.history.replaceState({}, document.title, window.location.pathname);
+        if (urlParams.has('key')) {
+            token = urlParams.get('key');
+            localStorage.setItem('letreiro_access_key', token);
         }
 
-        function getAuthHeaders() {
-            const headers = { 'Content-Type': 'application/json' };
-            const key = localStorage.getItem('access_key');
-            if (key) headers['x-access-token'] = key;
-            return headers;
-        }
-
-        async function handleResponse(res) {
-            if (res.status === 401) {
-                const key = prompt("Senha de Acesso Necessária:");
-                if (key) {
-                    localStorage.setItem('access_key', key);
-                    return true; // Retry allowed
-                }
+        // Haptic feedback helper
+        function vibrate(ms = 15) {
+            if ('vibrate' in navigator) {
+                try { navigator.vibrate(ms); } catch (e) {}
             }
-            return false;
         }
 
-        async function sendCommand(action, value) {
-            const payload = { action: action };
-            if (value !== undefined) payload.value = value;
+        // Wake Lock helper (keeps screen on)
+        async function toggleWakeLock() {
+            vibrate(20);
+            const btn = document.getElementById('btnWakeLock');
+            if (!wakeLock) {
+                try {
+                    if ('wakeLock' in navigator) {
+                        wakeLock = await navigator.wakeLock.request('screen');
+                        btn.classList.add('active');
+                        wakeLock.addEventListener('release', () => {
+                            btn.classList.remove('active');
+                            wakeLock = null;
+                        });
+                    } else {
+                        alert('Seu navegador não suporta a função Wake Lock.');
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            } else {
+                wakeLock.release();
+                wakeLock = null;
+                btn.classList.remove('active');
+            }
+        }
 
+        // Tab Switching
+        function switchTab(tabId, el) {
+            vibrate(10);
+            activeTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            const target = document.getElementById('tab-' + tabId);
+            if (target) target.classList.add('active');
+            if (el) el.classList.add('active');
+        }
+
+        // Send Command to Server
+        async function sendCmd(action, extraData = {}) {
+            vibrate(20);
             try {
+                const payload = { action, ...extraData };
                 const res = await fetch('/api/command', {
                     method: 'POST',
-                    headers: getAuthHeaders(),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': token
+                    },
                     body: JSON.stringify(payload)
                 });
-                if (await handleResponse(res)) sendCommand(action, value); // Retry
-            } catch (e) { console.error(e); }
+
+                if (res.status === 401) {
+                    showAuthModal();
+                    return;
+                }
+
+                updateStatus();
+            } catch (err) {
+                console.error('Falha ao enviar comando:', err);
+            }
         }
 
-        async function setSize(target, value) {
-            try {
-                const res = await fetch('/api/command', {
-                    method: 'POST',
-                    headers: getAuthHeaders(),
-                    body: JSON.stringify({ action: 'set_tv_size', target: target, value: value })
-                });
-                if (await handleResponse(res)) setSize(target, value);
-            } catch (e) { console.error(e); }
+        // Quick Notice Broadcast
+        function sendQuickNotice() {
+            const msg = document.getElementById('txtAlertMessage').value.trim();
+            if (!msg) {
+                alert('Digite a mensagem do aviso antes de enviar.');
+                return;
+            }
+            const dur = document.getElementById('selAlertDuration').value;
+            const col = document.getElementById('selAlertColor').value;
+            
+            sendCmd('quick_message', { message: msg, duration: dur, color: col });
+            document.getElementById('txtAlertMessage').value = '';
+            
+            switchTab('control', document.querySelectorAll('.nav-item')[0]);
         }
 
-        let firstLoad = true;
+        function applyPreset(text) {
+            document.getElementById('txtAlertMessage').value = text;
+            vibrate(15);
+        }
 
+        // Warning Visual Settings
+        function toggleWarningConfig() {
+            currentEnableWarning = !currentEnableWarning;
+            sendCmd('set_warning', { enable: currentEnableWarning.toString(), seconds: currentWarningSeconds.toString() });
+        }
+
+        let warningDebounce = null;
+        function onWarningSecInput(val) {
+            currentWarningSeconds = parseInt(val);
+            document.getElementById('valWarningSec').innerText = val + 's';
+            clearTimeout(warningDebounce);
+            warningDebounce = setTimeout(() => {
+                sendCmd('set_warning', { enable: currentEnableWarning.toString(), seconds: currentWarningSeconds.toString() });
+            }, 150);
+        }
+
+        // Sliders Realtime Debounce
+        let sliderDebounce = null;
+        function onTvSizeInput(target, val, labelId) {
+            document.getElementById(labelId).innerText = val + 'px';
+            clearTimeout(sliderDebounce);
+            sliderDebounce = setTimeout(() => {
+                sendCmd('set_tv_size', { target: target, value: parseInt(val) });
+            }, 100);
+        }
+
+        // Update UI from Server Status
         async function updateStatus() {
             try {
-                const res = await fetch('/api/status', { headers: getAuthHeaders() });
-                if (await handleResponse(res)) { updateStatus(); return; }
+                const res = await fetch('/api/status', {
+                    headers: { 'x-access-token': token }
+                });
 
-                if (!res.ok) return;
+                if (res.status === 401) {
+                    showAuthModal();
+                    setOnlineState(false);
+                    return;
+                }
+
+                if (!res.ok) throw new Error('Status Error');
 
                 const data = await res.json();
+                lastStatus = data;
+                setOnlineState(true);
 
-                document.getElementById('currentText').innerText = data.currentText || 'Sem texto';
+                // Update Header Day
+                document.getElementById('lblServiceDay').innerText = data.currentDay || 'Culto';
 
-                const timerEl = document.getElementById('timer');
-                timerEl.innerText = data.timer;
-                timerEl.style.color = data.timerRunning ? '#00E676' : '#555';
-
-                // Update Sliders only on first load/connect to avoid jumping while dragging
-                // Ideally we would sync only if not dragging, but keep it simple
-                if (firstLoad) {
-                    if (data.tvEventSize) document.getElementById('rngEvent').value = data.tvEventSize;
-                    if (data.tvListSize) document.getElementById('rngList').value = data.tvListSize;
-                    if (data.tvTimerSize) document.getElementById('rngTimer').value = data.tvTimerSize;
-                    if (data.tvClockSize) document.getElementById('rngClock').value = data.tvClockSize;
-                    if (data.tvFooterSize) document.getElementById('rngFooter').value = data.tvFooterSize;
-                    firstLoad = false;
+                // Update Current Item
+                const lblItem = document.getElementById('lblCurrentItem');
+                lblItem.innerText = data.currentText || 'Aguardando Seleção...';
+                if (data.currentItemColor) {
+                    lblItem.style.color = data.currentItemColor;
                 }
 
-                // Render Schedule
-                const list = document.getElementById('schedule');
-                list.innerHTML = '';
-                if (data.schedule && data.schedule.length > 0) {
-                    data.schedule.forEach(item => {
-                        const li = document.createElement('li');
-                        li.className = 'schedule-item' + (item.active ? ' active' : '');
-                        li.onclick = () => sendCommand('select_item', item.index);
+                // Update Timer Display
+                const lblTimer = document.getElementById('lblTimer');
+                lblTimer.innerText = data.timer || '--:--';
 
-                        li.innerHTML = `
-                            <div>
-                                <div class='item-time'>${item.time}</div>
-                                <div class='item-content'>${item.content}</div>
-                            </div>
-                            ${item.active ? '<span>🔴</span>' : ''}
-                        `;
-                        list.appendChild(li);
-                    });
+                // Timer Classes (Running / Warning / Critical)
+                lblTimer.classList.remove('running', 'warning', 'critical');
+                const pBar = document.getElementById('progressBar');
+                pBar.style.width = (data.timerProgress || 0) + '%';
+
+                if (data.timerRunning) {
+                    lblTimer.classList.add('running');
+                    document.getElementById('liveTag').style.opacity = '1';
+                    document.getElementById('liveStateLabel').innerText = 'NO AR';
                 } else {
-                    list.innerHTML = '<li style="color:#666; padding:10px;">Nenhum item no cronograma.</li>';
+                    document.getElementById('liveStateLabel').innerText = 'PAUSADO';
                 }
-            } catch (e) { console.error(e); }
+
+                if (data.warningActive) {
+                    lblTimer.classList.remove('running');
+                    lblTimer.classList.add('critical');
+                }
+
+                // Update Play/Pause Button
+                const btnPlay = document.getElementById('btnPlayPause');
+                const btnPlayIcon = document.getElementById('btnPlayIcon');
+                const btnPlayText = document.getElementById('btnPlayText');
+
+                if (data.timerRunning) {
+                    btnPlay.className = 'btn-ctrl btn-play is-running';
+                    btnPlayIcon.innerText = '⏸️';
+                    btnPlayText.innerText = 'PAUSAR';
+                } else if (data.timer && data.timer !== '--:--' && data.timer !== '00:00') {
+                    btnPlay.className = 'btn-ctrl btn-play is-paused';
+                    btnPlayIcon.innerText = '▶️';
+                    btnPlayText.innerText = 'CONTINUAR';
+                } else {
+                    btnPlay.className = 'btn-ctrl btn-play';
+                    btnPlayIcon.innerText = '▶️';
+                    btnPlayText.innerText = 'INICIAR';
+                }
+
+                // Update Blackout Button
+                const btnBlackout = document.getElementById('btnBlackout');
+                const btnBlackoutText = document.getElementById('btnBlackoutText');
+                if (data.isContentVisible === false) {
+                    btnBlackout.classList.add('active');
+                    btnBlackoutText.innerText = '⚫ Blackout ATIVO';
+                } else {
+                    btnBlackout.classList.remove('active');
+                    btnBlackoutText.innerText = 'Blackout (Oração)';
+                }
+
+                // Update Banner Button
+                const btnBanner = document.getElementById('btnBanner');
+                if (data.showBanner) {
+                    btnBanner.style.background = 'rgba(0, 230, 118, 0.2)';
+                } else {
+                    btnBanner.style.background = 'var(--bg-card-solid)';
+                }
+
+                // Update Toggles in Settings
+                updateToggleBtn('toggleClockBtn', data.showClock);
+                updateToggleBtn('toggleTimerBtn', data.showTimer);
+                updateToggleBtn('toggleScheduleBtn', data.showSchedule);
+
+                // Warning Settings Sync
+                if (data.enableWarning !== undefined) {
+                    currentEnableWarning = data.enableWarning;
+                    const btnW = document.getElementById('btnToggleWarning');
+                    if (currentEnableWarning) {
+                        btnW.innerText = 'Ativado';
+                        btnW.className = 'btn-pill btn-accent';
+                    } else {
+                        btnW.innerText = 'Desativado';
+                        btnW.className = 'btn-pill btn-danger';
+                    }
+                }
+                if (data.warningSeconds !== undefined && document.activeElement.id !== 'rangeWarningSec') {
+                    currentWarningSeconds = data.warningSeconds;
+                    document.getElementById('rangeWarningSec').value = data.warningSeconds;
+                    document.getElementById('valWarningSec').innerText = data.warningSeconds + 's';
+                }
+
+                // Update Sliders if not being dragged
+                if (document.activeElement.tagName !== 'INPUT' || document.activeElement.type !== 'range') {
+                    syncSlider('rangeTvEventSize', 'valTvEventSize', data.tvEventSize);
+                    syncSlider('rangeTvTimerSize', 'valTvTimerSize', data.tvTimerSize);
+                    syncSlider('rangeTvClockSize', 'valTvClockSize', data.tvClockSize);
+                    syncSlider('rangeTvListSize', 'valTvListSize', data.tvListSize);
+                    syncSlider('rangeTvFooterSize', 'valTvFooterSize', data.tvFooterSize);
+                }
+
+                // Update Schedule Tab Pills
+                if (data.scheduleTabs) {
+                    renderDayPills(data.scheduleTabs, data.currentDay);
+                }
+
+                // Update Schedule Items
+                if (data.schedule) {
+                    scheduleRawList = data.schedule;
+                    renderScheduleList(data.schedule, data.currentItemIndex);
+                }
+
+            } catch (err) {
+                setOnlineState(false);
+            }
         }
 
-        setInterval(updateStatus, 1000);
+        function updateToggleBtn(id, isActive) {
+            const btn = document.getElementById(id);
+            if (isActive) btn.classList.add('active');
+            else btn.classList.remove('active');
+        }
+
+        function syncSlider(sliderId, labelId, val) {
+            if (val !== undefined && val > 0) {
+                const s = document.getElementById(sliderId);
+                const l = document.getElementById(labelId);
+                if (s && l) {
+                    s.value = val;
+                    l.innerText = val + 'px';
+                }
+            }
+        }
+
+        function setOnlineState(online) {
+            isOnline = online;
+            const dot = document.getElementById('statusDot');
+            const txt = document.getElementById('statusText');
+            if (online) {
+                dot.classList.add('connected');
+                txt.innerText = 'Ao Vivo';
+            } else {
+                dot.classList.remove('connected');
+                txt.innerText = 'Reconectando...';
+            }
+        }
+
+        // Render Day Tabs
+        function renderDayPills(tabs, currentDay) {
+            const container = document.getElementById('dayPillsContainer');
+            if (!container) return;
+
+            let html = '';
+            tabs.forEach(tab => {
+                const isCurrent = (tab.name === currentDay);
+                html += `<button class="day-pill-btn ${isCurrent ? 'active' : ''}" onclick="changeDay('${tab.name}')">${tab.name} (${tab.itemCount})</button>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function changeDay(dayName) {
+            vibrate(15);
+            sendCmd('change_day', { value: dayName });
+        }
+
+        // Render Schedule Items
+        function renderScheduleList(items, activeIndex) {
+            const container = document.getElementById('scheduleListContainer');
+            if (!container) return;
+
+            const filterQuery = document.getElementById('txtSearchSchedule')?.value.toLowerCase().trim() || '';
+
+            let html = '';
+            items.forEach((item, idx) => {
+                const title = item.Content || '';
+                const lead = item.Lead || '';
+                if (filterQuery && !title.toLowerCase().includes(filterQuery) && !lead.toLowerCase().includes(filterQuery)) {
+                    return;
+                }
+
+                const isActive = (idx === activeIndex);
+                const color = item.Color || '#38BDF8';
+
+                html += `
+                <div class="schedule-card ${isActive ? 'active' : ''}" style="--item-color: ${color};" onclick="selectScheduleItem(${idx})">
+                    <div class="schedule-time-box">
+                        <span class="schedule-time">${item.Time || '--:--'}</span>
+                        <span class="schedule-duration">${item.Duration || '-'}</span>
+                    </div>
+                    <div class="schedule-info">
+                        <div class="schedule-title">${title}</div>
+                        ${lead ? `<div class="schedule-lead">${lead}</div>` : ''}
+                    </div>
+                    <div class="active-indicator">🔴</div>
+                </div>`;
+            });
+
+            if (html === '') {
+                html = '<div style="text-align:center; padding: 30px; color: var(--text-dim);">Nenhum item encontrado.</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function selectScheduleItem(index) {
+            vibrate(25);
+            sendCmd('select_item', { value: index });
+            switchTab('control', document.querySelectorAll('.nav-item')[0]);
+        }
+
+        function filterSchedule() {
+            if (lastStatus && lastStatus.schedule) {
+                renderScheduleList(lastStatus.schedule, lastStatus.currentItemIndex);
+            }
+        }
+
+        // Password Modal Handling
+        function showAuthModal() {
+            document.getElementById('authModal').style.display = 'flex';
+        }
+
+        function submitPassword() {
+            const pass = document.getElementById('txtPasswordInput').value.trim();
+            if (pass) {
+                token = pass;
+                localStorage.setItem('letreiro_access_key', token);
+                document.getElementById('authModal').style.display = 'none';
+                updateStatus();
+            }
+        }
+
+        // Loop Polling (Fast & Responsive)
+        setInterval(updateStatus, 800);
         updateStatus();
     </script>
 </body>

@@ -702,6 +702,37 @@ namespace LetreiroDigital.ViewModels
             StateChanged?.Invoke();
         }
 
+        public void ShowQuickNotice(string message, int durationSeconds = 300, string color = "#FFD700")
+        {
+            if (string.IsNullOrWhiteSpace(message)) return;
+
+            var quickItem = new ScheduleItem
+            {
+                Time = "AVISO AO VIVO",
+                Sigla = "AVS",
+                Content = message.Trim(),
+                Duration = $"{Math.Max(1, durationSeconds / 60)}min",
+                Lead = "Aviso / Informação",
+                Color = color
+            };
+
+            CurrentItem = quickItem;
+            CurrentItemIndex = null;
+
+            if (!_showBanner) ShowBanner = true;
+            IsContentVisible = true;
+
+            if (durationSeconds > 0)
+                _timerService.Start(durationSeconds);
+            else
+                _timerService.Stop();
+
+            OnPropertyChanged(nameof(DisplayText));
+            OnPropertyChanged(nameof(TextColor));
+            ItemSelected?.Invoke();
+            StateChanged?.Invoke();
+        }
+
         public void AdvanceToNextItem()
         {
             var schedule = CurrentSchedule;

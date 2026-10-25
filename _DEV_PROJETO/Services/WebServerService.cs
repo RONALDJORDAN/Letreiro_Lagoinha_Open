@@ -205,6 +205,8 @@ namespace LetreiroDigital.Services
                         showClock = _viewModel.ShowClock,
                         showTimer = _viewModel.ShowTimer,
                         showSchedule = _viewModel.ShowSchedule,
+                        isContentVisible = _viewModel.IsContentVisible,
+                        currentItemColor = _viewModel.TextColor,
                         // Warning settings
                         enableWarning = _viewModel.EnableWarning,
                         warningSeconds = _viewModel.WarningSeconds,
@@ -232,6 +234,10 @@ namespace LetreiroDigital.Services
                     else if (action == "playpause") _viewModel.ToggleTimerPause();
                     else if (action == "stop") _viewModel.EmergencyStop();
                     else if (action == "toggle_banner") _viewModel.ToggleBanner();
+                    else if (action == "toggle_blackout")
+                    {
+                        Application.Current.Dispatcher.Invoke(() => _viewModel.IsContentVisible = !_viewModel.IsContentVisible);
+                    }
                     else if (action == "select_item")
                     {
                          try {
@@ -243,6 +249,28 @@ namespace LetreiroDigital.Services
                                      _viewModel.SelectItem(sched[index], index);
                              }
                          } catch {}
+                    }
+                    else if (action == "quick_message")
+                    {
+                        try {
+                            string msg = ExtractJsonValue(body, "message");
+                            string durStr = ExtractJsonValue(body, "duration");
+                            string col = ExtractJsonValue(body, "color");
+                            if (string.IsNullOrEmpty(col)) col = "#FFD700";
+                            int dur = 300;
+                            if (int.TryParse(durStr, out int parsedDur) && parsedDur > 0) dur = parsedDur;
+                            Application.Current.Dispatcher.Invoke(() => _viewModel.ShowQuickNotice(msg, dur, col));
+                        } catch {}
+                    }
+                    else if (action == "set_custom_timer")
+                    {
+                        try {
+                            string valStr = ExtractJsonValue(body, "value");
+                            if (int.TryParse(valStr, out int seconds) && seconds > 0)
+                            {
+                                Application.Current.Dispatcher.Invoke(() => _viewModel.TimerSvc.Start(seconds));
+                            }
+                        } catch {}
                     }
                     else if (action == "set_tv_size")
                     {
@@ -295,9 +323,16 @@ namespace LetreiroDigital.Services
                     {
                         Application.Current.Dispatcher.Invoke(() => _viewModel.ShowSchedule = !_viewModel.ShowSchedule);
                     }
-                    else if (action == "add_time")
+                    else if (action == "add_time" || action == "add_time_custom")
                     {
-                        Application.Current.Dispatcher.Invoke(() => _viewModel.TimerSvc.AddSeconds(60));
+                        try {
+                            string valStr = ExtractJsonValue(body, "value");
+                            int delta = 60;
+                            if (int.TryParse(valStr, out int customDelta) && customDelta != 0) delta = customDelta;
+                            Application.Current.Dispatcher.Invoke(() => _viewModel.TimerSvc.AddSeconds(delta));
+                        } catch {
+                            Application.Current.Dispatcher.Invoke(() => _viewModel.TimerSvc.AddSeconds(60));
+                        }
                     }
                     else if (action == "sub_time")
                     {

@@ -99,6 +99,10 @@ namespace LetreiroDigital.Views
             }
         }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 96b50b0 (fix: corrige .gitignore e remove arquivos temporarios do index)
         // ==================== REFRESH ALL UI ====================
         private void RefreshUI()
         {
@@ -462,7 +466,26 @@ namespace LetreiroDigital.Views
                 var newItem = dlg.ResultItem;
                 var schedule = _vm.CurrentSchedule;
                 if (index.HasValue)
+                {
+                    if (index.Value == 0 && item != null && newItem.Time != item.Time)
+                    {
+                        if (TimeSpan.TryParse(item.Time, out var oldTime) && TimeSpan.TryParse(newItem.Time, out var newTime))
+                        {
+                            var diff = newTime - oldTime;
+                            for (int i = 1; i < schedule.Count; i++)
+                            {
+                                if (TimeSpan.TryParse(schedule[i].Time, out var t))
+                                {
+                                    var adjusted = t + diff;
+                                    if (adjusted.TotalDays >= 1) adjusted -= TimeSpan.FromDays(1);
+                                    if (adjusted.TotalDays < 0) adjusted += TimeSpan.FromDays(1);
+                                    schedule[i].Time = adjusted.ToString(@"hh\:mm");
+                                }
+                            }
+                        }
+                    }
                     schedule[index.Value] = newItem;
+                }
                 else
                     schedule.Add(newItem);
 
@@ -1272,8 +1295,12 @@ namespace LetreiroDigital.Views
             // Reset layout defaults
             colList.Width = new GridLength(340);
             colControls.Width = new GridLength(300);
-            colPreview.Width = new GridLength(1, GridUnitType.Star);
+            //colPreview.Width = new GridLength(1, GridUnitType.Star);
             Grid.SetColumn(paneList, 0);
+<<<<<<< HEAD
+=======
+            //Grid.SetColumn(panePreview, 1);
+>>>>>>> 96b50b0 (fix: corrige .gitignore e remove arquivos temporarios do index)
             Grid.SetColumn(paneControls, 2);
             paneControls.Visibility = Visibility.Visible;
 

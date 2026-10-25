@@ -10,24 +10,9 @@
     Background="{DynamicResource PanelBgBrush}"
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
-    Opacity="0"
     PreviewKeyDown="Window_PreviewKeyDown">
 
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Loaded">
-            <BeginStoryboard Storyboard="{StaticResource WindowFadeIn}" />
-        </EventTrigger>
-    </Window.Triggers>
-
     <Window.Resources>
-        <Storyboard x:Key="WindowFadeIn">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.8" />
-            <DoubleAnimation Storyboard.TargetProperty="Top" From="50" Duration="0:0:0.8">
-                <DoubleAnimation.EasingFunction>
-                    <ExponentialEase EasingMode="EaseOut" Exponent="7" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
 
         <Style x:Key="GlassBorder" TargetType="Border">
             <Setter Property="Background" Value="#22FFFFFF" />
@@ -268,13 +253,16 @@
                 </Setter.Value>
             </Setter>
         </Style>
-    </Window.Resources>    <Grid>
+    </Window.Resources>
+
+
+    <Grid>
         <DockPanel>
         <Menu x:Name="MainMenu" DockPanel.Dock="Top" Background="{DynamicResource ControlHeaderBgBrush}" Foreground="{DynamicResource UserTextBrush}" FontSize="11"
             Padding="5,8">
             <MenuItem Header="📋 Arquivo" Foreground="{DynamicResource UserTextBrush}">
-                <MenuItem Header="💾 Salvar Tudo (Ctrl+S)" Click="MenuSave_Click" />
-                <MenuItem Header="🔄 Recarregar" Click="MenuReload_Click" />
+                <MenuItem Header="💾 Salvar Tudo (Ctrl+S)" />
+                <MenuItem Header="🔄 Recarregar" />
                 <Separator />
                 <MenuItem Header="Exportar Cronograma" Click="MenuExportSchedule_Click" />
                 <MenuItem Header="Importar Cronograma" Click="MenuImportSchedule_Click" />
@@ -298,7 +286,13 @@
                 <MenuItem Header="🛠️ Editor de Temas Público" Click="MenuThemeEditor_Click" FontWeight="Bold" />
             </MenuItem>
 
+<<<<<<< HEAD
 
+=======
+            <MenuItem Header="⚙️ Configurações" Foreground="{DynamicResource UserTextBrush}">
+                <MenuItem Header="Configurações Gerais" Click="MenuGeneralSettings_Click" />
+            </MenuItem>
+>>>>>>> 96b50b0 (fix: corrige .gitignore e remove arquivos temporarios do index)
 
             <MenuItem Header="⚙️ Apresentação" Foreground="{DynamicResource UserTextBrush}">
                 <MenuItem Header="Modo Tela Cheia" Click="MenuFullscreen_Click" InputGestureText="F11" />
